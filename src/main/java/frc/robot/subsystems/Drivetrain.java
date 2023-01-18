@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -24,11 +25,17 @@ public class Drivetrain extends SubsystemBase{
     
     // Drivetrain
     private final DifferentialDrive m_drivetrain = new DifferentialDrive(m_leftMotorGroup, m_rightMotorGroup);
+    
+    @Override
+    public void periodic () {
+        SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
+        SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
+    }
 
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
-        m_leftMotorGroup.set(leftPercentOutput);
+        m_leftMotorGroup.set(-leftPercentOutput);
         m_rightMotorGroup.set(rightPercentOutput);
     }
     // Define arcadeDrive

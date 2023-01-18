@@ -24,10 +24,10 @@ public final class Constants {
 
   }
   // Drivetrain Ports
-  public static final int FRONT_LEFT_MOTOR_PORT = 1;
-  public static final int BACK_LEFT_MOTOR_PORT = 2;
-  public static final int FRONT_RIGHT_MOTOR_PORT = 14;
-  public static final int BACK_RIGHT_MOTOR_PORT = 13;
+  public static final int FRONT_LEFT_MOTOR_PORT = 2;
+  public static final int BACK_LEFT_MOTOR_PORT = 7;
+  public static final int FRONT_RIGHT_MOTOR_PORT = 1;
+  public static final int BACK_RIGHT_MOTOR_PORT = 4;
 
   public static final int XBOX_CONTROLLER_PORT = 0;
   

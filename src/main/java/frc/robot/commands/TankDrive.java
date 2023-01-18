@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -35,7 +36,9 @@ public class TankDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-	  m_drivetrain.tankDrive(m_xboxController.getRightY(), m_xboxController.getLeftY());
+	  m_drivetrain.tankDrive(m_xboxController.getLeftY(), m_xboxController.getRightY());
+    SmartDashboard.putNumber("Controller Right Y", m_xboxController.getRightY());
+    SmartDashboard.putNumber("Controller Left Y", m_xboxController.getLeftY());
   }
 
   // Called once the command ends or is interrupted.
