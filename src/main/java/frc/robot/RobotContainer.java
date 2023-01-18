@@ -5,9 +5,11 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.ArcadeDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -28,7 +30,7 @@ public class RobotContainer {
   private final XboxController m_xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
   // private final Camera m_camera = new Camera();
   private final Drivetrain m_drivetrain = new Drivetrain();
-
+  private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
 
   // The robot's subsystems and commands are defined here...
@@ -58,7 +60,7 @@ public class RobotContainer {
    */
    
   private void configureBindings() {
-    m_drivetrain.setDefaultCommand(tankDrive);
+    m_drivetrain.setDefaultCommand(arcadeDrive);
   }
 
   private void configureButtonBindings() {
