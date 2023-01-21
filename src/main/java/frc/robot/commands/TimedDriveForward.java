@@ -10,17 +10,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.Drivetrain;
 
-public class Autonomous extends CommandBase {
+public class TimedDriveForward extends CommandBase {
   /** Creates a new Autonomous. */
 
   private Drivetrain m_drivetrain;
   private double startTime;
 
-  public static CommandBase autonomous () {
-    return Commands.sequence();
-  }
+  // public static CommandBase autonomous () {
+  //   return Commands.sequence();
+  // }
 
-  public Autonomous(Drivetrain drivetrain) {
+  public TimedDriveForward(Drivetrain drivetrain) {
     // Will start auto for 3 seconds and then turn off
     m_drivetrain = drivetrain;
     addRequirements(m_drivetrain);
