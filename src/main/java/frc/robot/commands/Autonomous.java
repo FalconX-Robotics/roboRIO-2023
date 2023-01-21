@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.Drivetrain;
 
@@ -14,11 +15,15 @@ public class Autonomous extends CommandBase {
 
   private Drivetrain m_drivetrain;
   private double startTime;
-  
-  
-  public Autonomous() {
+
+  public static CommandBase autonomous () {
+    return Commands.sequence();
+  }
+
+  public Autonomous(Drivetrain drivetrain) {
     // Will start auto for 3 seconds and then turn off
-    
+    m_drivetrain = drivetrain;
+    addRequirements(m_drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +36,7 @@ public class Autonomous extends CommandBase {
   @Override
   public void execute() {
     m_drivetrain.tankDrive(0.5, 0.5);
-    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
