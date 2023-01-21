@@ -10,12 +10,12 @@ import frc.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.XboxController;
 
-public class ArcadeDrive extends CommandBase {
+public class CurvatureDrive extends CommandBase {
   /** Creates a new ArcadeDrive. */
   private final Drivetrain m_drivetrain;
   private final XboxController m_xboxController;
   
-  public ArcadeDrive(Drivetrain drivetrain, XboxController xboxController) {
+  public CurvatureDrive(Drivetrain drivetrain, XboxController xboxController) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
     m_xboxController = xboxController;
@@ -30,13 +30,13 @@ public class ArcadeDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivetrain.arcadeDrive(m_xboxController.getRightY(), m_xboxController.getLeftX());
+    m_drivetrain.curvatureDrive(m_xboxController.getRightY(), m_xboxController.getLeftX());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.arcadeDrive(0, 0);
+    m_drivetrain.curvatureDrive(0, 0);
   }
 
   // Returns true when the command should end.

@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.TimedDriveForward;
 import frc.robot.commands.Autos;
+import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
@@ -33,6 +34,7 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
+  private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();

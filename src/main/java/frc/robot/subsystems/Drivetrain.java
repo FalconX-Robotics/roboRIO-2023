@@ -26,24 +26,33 @@ public class Drivetrain extends SubsystemBase{
     // Drivetrain
     private final DifferentialDrive m_drivetrain = new DifferentialDrive(m_leftMotorGroup, m_rightMotorGroup);
     
+    public Drivetrain () {
+        m_leftFrontMotor.setInverted(true);
+        m_leftBackMotor.setInverted(true);
+        m_rightFrontMotor.setInverted(false);
+        m_rightBackMotor.setInverted(false);
+    }
+
     @Override
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
     }
-
+    
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
-        m_leftMotorGroup.set(-leftPercentOutput);
+        m_leftMotorGroup.set(leftPercentOutput);
         m_rightMotorGroup.set(rightPercentOutput);
         System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
-    public void arcadeDrive (double PercentOutputY, double PercentOutputX) {
-        m_drivetrain.arcadeDrive(PercentOutputY, PercentOutputX);
+    public void arcadeDrive (double fowardPercentOutput, double turnPercent) {
+        m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
     }
 
-    
+    public void curvatureDrive (double leftPercentY, double rightPercentY) {
+        m_drivetrain.curvatureDrive(leftPercentY, rightPercentY, false);
+    }
 }
