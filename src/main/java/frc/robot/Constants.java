@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 /**
  * <div> Nobody will know, because at the end of the day it is night.
  * <p>The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -20,8 +21,6 @@ import edu.wpi.first.wpilibj.XboxController;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
-
-
   }
   // Drivetrain Ports
   public static final int FRONT_LEFT_MOTOR_PORT = 2;
@@ -32,4 +31,19 @@ public final class Constants {
   public static final int XBOX_CONTROLLER_PORT = 0;
   
   public static final int LED_PORT = 10;
+
+  // SysId, DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING
+  // have a nice day - will
+  public static final double ksVolts = 0.13012;
+  public static final double kvVoltSecondsPerMeter = 2.3138;
+  public static final double kaVoltSecondsSquaredPerMeter = 0.36023;
+  public static final double kPDriveVel = 3.0519;
+  // Distance between wheels
+  public static final double kTrackWidthMeters = 0.53;
+  public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
+  public static final double kMaxSpeedMetersPerSecons = 2.;
+  public static final double kMaxAccelerationMetersPerSecondSquared = 1.;
+  // Idk what a ramsete controller is but its important -w
+  public static final double kRamseteB = 2.;
+  public static final double kRamseteZeta = 0.7;
 }
