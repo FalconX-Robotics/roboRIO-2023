@@ -8,7 +8,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -73,14 +75,55 @@ public class Drivetrain extends SubsystemBase{
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
+        m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
     }
-    
+    // ODOMETRY CODE BELOW
+    // DO NOT TOUCH UNLESS YOU ALREADY KNOW WHAT YOU ARE DOIN
+    // wil :)
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        // Docs used .getRate(), this might be in the wrong unit but idk :)
+        // probably will work tho ;)
+        return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
+    }
+    public void resetOdometry(){
+        // this isnt what max said to do i dont think but i mean :/
+        m_odometry.resetPosition(m_gyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), getPose());
+    }
+    /** Prob unneccessary */
+    public void resetEncoders() {
+        m_leftEncoder.setPosition(0);
+        m_leftEncoder.setPosition(0);
+    }
+    public RelativeEncoder getLeftEncoder () {
+        return m_leftEncoder;
+    }
+    public RelativeEncoder getRightEncoder () {
+        return m_rightEncoder;
+    }
+    /** Also prob unneccessary */
+    public void zeroHeading(){
+        m_gyro.reset();
+    }
+    public double getTurnRate() {
+        return -m_gyro.getRate();
+    }
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
         m_leftMotorGroup.set(leftPercentOutput);
         m_rightMotorGroup.set(rightPercentOutput);
         System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
+    }
+    /** Please do not use for actual driving
+     *  Allows for auto code stuff
+     *  Don't make me explain -w
+     */
+    public void voltTankDrive (double leftVoltage, double rightVoltage) {
+        m_leftMotorGroup.setVoltage(leftVoltage);
+        m_rightMotorGroup.setVoltage(rightVoltage);
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
