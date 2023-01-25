@@ -115,7 +115,7 @@ public class Drivetrain extends SubsystemBase{
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
         m_leftMotorGroup.set(leftPercentOutput);
         m_rightMotorGroup.set(rightPercentOutput);
-        System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
+        // System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
     }
     /** Please do not use for actual driving
      *  Allows for auto code stuff

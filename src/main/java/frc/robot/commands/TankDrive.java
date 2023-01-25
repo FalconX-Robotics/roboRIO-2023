@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/** An example command that uses an example subsystem. */
+/** Tank drive goes vroom vroom */
 public class TankDrive extends CommandBase {
 //   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
@@ -37,8 +37,8 @@ public class TankDrive extends CommandBase {
   @Override
   public void execute() {
 	  m_drivetrain.tankDrive(m_xboxController.getLeftY(), m_xboxController.getRightY());
-    SmartDashboard.putNumber("Controller Right Y", m_xboxController.getRightY());
-    SmartDashboard.putNumber("Controller Left Y", m_xboxController.getLeftY());
+    // SmartDashboard.putNumber("Controller Right Y", m_xboxController.getRightY());
+    // SmartDashboard.putNumber("Controller Left Y", m_xboxController.getLeftY());
   }
 
   // Called once the command ends or is interrupted.

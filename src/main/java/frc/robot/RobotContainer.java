@@ -14,9 +14,24 @@ import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+
+import java.util.List;
+
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -32,9 +47,9 @@ public class RobotContainer {
   private final XboxController m_xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
   // private final Camera m_camera = new Camera();
   private final Drivetrain m_drivetrain = new Drivetrain();
-  private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
-  private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
-  private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
+  private final ArcadeDrive m_arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
+  private final TankDrive m_tankDrive = new TankDrive(m_drivetrain, m_xboxController);
+  private final CurvatureDrive m_curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -63,7 +78,7 @@ public class RobotContainer {
    */
    
   private void configureBindings() {
-    m_drivetrain.setDefaultCommand(arcadeDrive);
+    m_drivetrain.setDefaultCommand(m_arcadeDrive);
   }
 
   private void configureButtonBindings() {
@@ -78,6 +93,50 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
-    return new TimedDriveForward(m_drivetrain);
+    // return new TimedDriveForward(m_drivetrain);
+    var autoVoltageConstraint =
+      new DifferentialDriveVoltageConstraint(
+        new SimpleMotorFeedforward(
+          Constants.ksVolts,
+          Constants.kvVoltSecondsPerMeter,
+          Constants.kaVoltSecondsSquaredPerMeter
+        ),
+      Constants.kDriveKinematics, 
+      5
+    );
+    TrajectoryConfig config = new TrajectoryConfig(
+        Constants.kMaxSpeedMetersPerSeconds,
+        Constants.kMaxAccelerationMetersPerSecondSquared
+      )
+        .setKinematics(Constants.kDriveKinematics)
+        .addConstraint(autoVoltageConstraint);
+    //EXAMPLE TRAJECTORY
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+      new Pose2d(0, 0, new Rotation2d(0)),
+      List.of(new Translation2d(1, 1), new Translation2d(2, 1)),
+      new Pose2d(3, 0, new Rotation2d(0)), config
+    );
+    /**WHAT IS A RAMSETE COMAAAAAAND???
+     * -w, the sign painter
+     */
+    RamseteCommand ramseteCommand =
+      new RamseteCommand (
+        exampleTrajectory,
+        m_drivetrain::getPose,
+        new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+        new SimpleMotorFeedforward(
+          Constants.ksVolts,
+          Constants.kvVoltSecondsPerMeter,
+          Constants.kaVoltSecondsSquaredPerMeter),
+        Constants.kDriveKinematics,
+        m_drivetrain::getWheelSpeeds,
+        new PIDController(Constants.kPDriveVel, 0, 0),
+        new PIDController(Constants.kPDriveVel, 0, 0),
+        m_drivetrain::voltTankDrive,
+        m_drivetrain
+      );
+    //Reset Odometry
+    m_drivetrain.resetOdometry();
+    return ramseteCommand.andThen(() -> m_drivetrain.voltTankDrive(0, 0));
   }
 }

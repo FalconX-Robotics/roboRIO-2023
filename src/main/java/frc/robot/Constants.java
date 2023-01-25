@@ -53,7 +53,7 @@ public final class Constants {
   // Distance between wheels
   public static final double kTrackWidthMeters = 0.53;
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
-  public static final double kMaxSpeedMetersPerSecons = 2.;
+  public static final double kMaxSpeedMetersPerSeconds = 2.;
   public static final double kMaxAccelerationMetersPerSecondSquared = 1.;
   // Idk what a ramsete controller is but its important -w
   public static final double kRamseteB = 2.;
