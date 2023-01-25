@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 /**
  * <div> Nobody will know, because at the end of the day it is night.
@@ -28,10 +30,20 @@ public final class Constants {
   public static final int FRONT_RIGHT_MOTOR_PORT = 1;
   public static final int BACK_RIGHT_MOTOR_PORT = 4;
 
+  // WHAT IS AN ENCODER??? WHY WHAT HOW WHEN AAAAAA
+  // temporary values
+  public static final int LeftEncoderPort1 = 6;
+  public static final int LeftEncoderPort2 = 6;
+  public static final int RightEncoderPort1 = 6;
+  public static final int RightEncoderPort2 = 2;
+  public static final boolean LeftEncoderReversed = true;
+  public static final boolean RightEncoderReversed = false;
+
   public static final int XBOX_CONTROLLER_PORT = 0;
   
+  public static final int PIGEON_PORT = 42;
   public static final int LED_PORT = 10;
-
+  
   // SysId, DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING
   // have a nice day - will
   public static final double ksVolts = 0.13012;

@@ -2,9 +2,13 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -23,17 +27,49 @@ public class Drivetrain extends SubsystemBase{
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
     
-    // Drivetrain
+    // What is encoder
+    // Depracated for now
+    // private final Encoder m_leftEncoder = new Encoder(
+    //     Constants.LeftEncoderPort1,
+    //     Constants.LeftEncoderPort2,
+    //     Constants.LeftEncoderReversed
+    // );
+    // private final Encoder m_rightEncoder = new Encoder(
+    //     Constants.RightEncoderPort1,
+    //     Constants.RightEncoderPort2,
+    //     Constants.LeftEncoderReversed
+    // );
+
+    private final RelativeEncoder m_leftEncoder = m_leftFrontMotor.getEncoder();
+    private final RelativeEncoder m_rightEncoder = m_rightFrontMotor.getEncoder();
+
+    // Drivetrain & gyro
+    private final WPI_PigeonIMU m_gyro = new WPI_PigeonIMU(Constants.PIGEON_PORT);
     private final DifferentialDrive m_drivetrain = new DifferentialDrive(m_leftMotorGroup, m_rightMotorGroup);
+
+    // Odometry supposedly tracks the position over time?
+    private final DifferentialDriveOdometry m_odometry;
     
     public Drivetrain () {
         m_leftFrontMotor.setInverted(true);
         m_leftBackMotor.setInverted(true);
         m_rightFrontMotor.setInverted(false);
         m_rightBackMotor.setInverted(false);
-    }
 
-    @Override
+        // do we even have encoders?
+        m_leftEncoder.setPositionConversionFactor(0.4788);
+        m_leftEncoder.setVelocityConversionFactor(0.4788);
+        m_rightEncoder.setPositionConversionFactor(0.4788);
+        m_rightEncoder.setVelocityConversionFactor(0.4788);
+        m_odometry = new DifferentialDriveOdometry(
+            m_gyro.getRotation2d(),
+            m_leftEncoder.getPosition(),
+            m_rightEncoder.getPosition()            
+        );
+    }
+    // Command base -> ab
+    // private Command command = new
+    // private CommandBase command = new ArcadeDrive();
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
