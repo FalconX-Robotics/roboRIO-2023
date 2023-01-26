@@ -2,12 +2,14 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -27,6 +29,7 @@ public class Drivetrain extends SubsystemBase{
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
     
+    PIDController pidController = new PIDController(92.2, 0, 7.3);
     // What is encoder
     // Depracated for now
     // private final Encoder m_leftEncoder = new Encoder(
@@ -50,6 +53,11 @@ public class Drivetrain extends SubsystemBase{
     // Odometry supposedly tracks the position over time?
     private final DifferentialDriveOdometry m_odometry;
     
+    
+    public PigeonIMU getGyro() {
+        return m_gyro;
+    }
+    
     public Drivetrain () {
         m_leftFrontMotor.setInverted(true);
         m_leftBackMotor.setInverted(true);
@@ -66,7 +74,7 @@ public class Drivetrain extends SubsystemBase{
             m_leftEncoder.getPosition(),
             m_rightEncoder.getPosition()            
         );
-    }
+       }
     // Command base -> ab
     // private Command command = new
     // private CommandBase command = new ArcadeDrive();
@@ -74,7 +82,6 @@ public class Drivetrain extends SubsystemBase{
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
     }
-    
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
@@ -91,4 +98,33 @@ public class Drivetrain extends SubsystemBase{
     public void curvatureDrive (double leftPercentY, double rightPercentY) {
         m_drivetrain.curvatureDrive(leftPercentY, rightPercentY, false);
     }
+
+    public void pidTankDrive(double distance) {
+        double setpoint = distance;
+        pidController.setSetpoint(setpoint);
+
+        m_leftMotorGroup.set(pidController.calculate(1));
+        m_rightMotorGroup.set(pidController.calculate(1));
+    }
+
+    
+    private double getMeasurement() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    
+    private void useOutput(double output, double setpoint) {
+        // TODO Auto-generated method stub
+        
+    }
 }
+
+
+/*
+ * No ones ever going to see this so im putting this down here
+ * PID
+ *  P - 92.2
+ *  I- ???
+ *  D - 7.3
+ */
