@@ -81,6 +81,9 @@ public class Drivetrain extends SubsystemBase{
     // DO NOT TOUCH UNLESS YOU ALREADY KNOW WHAT YOU ARE DOIN
     // wil :)
     public Pose2d getPose() {
+        System.out.println("Pose: " + m_odometry.getPoseMeters().getX() + ", "
+            + m_odometry.getPoseMeters().getY() + ", "
+            + m_odometry.getPoseMeters().getRotation().getDegrees());
         return m_odometry.getPoseMeters();
     }
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -124,6 +127,7 @@ public class Drivetrain extends SubsystemBase{
     public void voltTankDrive (double leftVoltage, double rightVoltage) {
         m_leftMotorGroup.setVoltage(leftVoltage);
         m_rightMotorGroup.setVoltage(rightVoltage);
+        System.out.println(leftVoltage + ", " + rightVoltage);
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
