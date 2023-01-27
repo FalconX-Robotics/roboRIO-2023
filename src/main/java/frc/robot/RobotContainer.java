@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.TimedDriveForward;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CurvatureDrive;
@@ -35,6 +36,7 @@ public class RobotContainer {
   private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
   private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
+  // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -78,6 +80,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
-    return new TimedDriveForward(m_drivetrain);
+    return new AutoBalance(m_drivetrain);
   }
 }
