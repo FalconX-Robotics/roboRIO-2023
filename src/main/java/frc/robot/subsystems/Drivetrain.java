@@ -63,6 +63,7 @@ public class Drivetrain extends SubsystemBase{
         m_leftEncoder.setVelocityConversionFactor(0.4788);
         m_rightEncoder.setPositionConversionFactor(0.4788);
         m_rightEncoder.setVelocityConversionFactor(0.4788);
+        
         m_odometry = new DifferentialDriveOdometry(
             m_gyro.getRotation2d(),
             m_leftEncoder.getPosition(),
@@ -76,6 +77,8 @@ public class Drivetrain extends SubsystemBase{
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
         m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
+        SmartDashboard.putNumber("leftEncoderPositionMeters", m_leftEncoder.getPosition());
+        SmartDashboard.putNumber("rightEncoderPositionMeters", m_rightEncoder.getPosition());
     }
     // ODOMETRY CODE BELOW
     // DO NOT TOUCH UNLESS YOU ALREADY KNOW WHAT YOU ARE DOIN
