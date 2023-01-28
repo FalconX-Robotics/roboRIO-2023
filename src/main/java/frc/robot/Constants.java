@@ -49,11 +49,12 @@ public final class Constants {
   public static final double ksVolts = 0.13012;
   public static final double kvVoltSecondsPerMeter = 2.3138;
   public static final double kaVoltSecondsSquaredPerMeter = 0.36023;
-  public static final double kPDriveVel = 3.0519;
+  // Was 3.0519 earlier, dunno why but change later if debugging and desperate
+  public static final double kPDriveVel = 0.4094;
   // Distance between wheels
   public static final double kTrackWidthMeters = 0.53;
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
-  public static final double kMaxSpeedMetersPerSeconds = 2.;
+  public static final double kMaxSpeedMetersPerSeconds = 3.;
   public static final double kMaxAccelerationMetersPerSecondSquared = 1.;
   // Idk what a ramsete controller is but its important -w
   public static final double kRamseteB = 2.;

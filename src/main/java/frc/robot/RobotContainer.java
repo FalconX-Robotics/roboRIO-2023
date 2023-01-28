@@ -94,6 +94,9 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
     // return new TimedDriveForward(m_drivetrain);
+    m_drivetrain.resetEncoders();
+    m_drivetrain.resetOdometry();
+    m_drivetrain.zeroHeading();
     var autoVoltageConstraint =
       new DifferentialDriveVoltageConstraint(
         new SimpleMotorFeedforward(

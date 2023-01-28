@@ -29,6 +29,8 @@ public class Drivetrain extends SubsystemBase{
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
     
+    private final double GEARING = 50.0/12.0*50./24.;
+    private final double WHEEL_CIRCUMFERENCE = 0.1524 * Math.PI;
     // What is encoder
     // Depracated for now
     // private final Encoder m_leftEncoder = new Encoder(
@@ -59,11 +61,22 @@ public class Drivetrain extends SubsystemBase{
         m_rightBackMotor.setInverted(false);
 
         // do we even have encoders?
-        m_leftEncoder.setPositionConversionFactor(0.4788);
-        m_leftEncoder.setVelocityConversionFactor(0.4788);
-        m_rightEncoder.setPositionConversionFactor(0.4788);
-        m_rightEncoder.setVelocityConversionFactor(0.4788);
-        
+        // m_leftEncoder.setPositionConversionFactor(0.4788);
+        // m_leftEncoder.setVelocityConversionFactor(0.4788);
+        // m_rightEncoder.setPositionConversionFactor(0.4788);
+        // m_rightEncoder.setVelocityConversionFactor(0.4788);
+        // m_leftEncoder.setInverted(true);
+        // m_rightEncoder.setInverted(true);
+        m_leftEncoder.setPositionConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
+        m_leftEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
+        m_rightEncoder.setPositionConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
+        m_rightEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
+
+        // m_leftEncoder.setMeasurementPeriod(0);
+        resetEncoders();
+        m_gyro.reset();
+        zeroHeading();
+
         m_odometry = new DifferentialDriveOdometry(
             m_gyro.getRotation2d(),
             m_leftEncoder.getPosition(),
@@ -79,6 +92,10 @@ public class Drivetrain extends SubsystemBase{
         m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
         SmartDashboard.putNumber("leftEncoderPositionMeters", m_leftEncoder.getPosition());
         SmartDashboard.putNumber("rightEncoderPositionMeters", m_rightEncoder.getPosition());
+        SmartDashboard.putNumber("poseX", getPose().getX());
+        SmartDashboard.putNumber("poseY", getPose().getY());
+        SmartDashboard.putNumber("Rot", m_gyro.getYaw());
+        SmartDashboard.putString("pose2d", m_odometry.toString());
     }
     // ODOMETRY CODE BELOW
     // DO NOT TOUCH UNLESS YOU ALREADY KNOW WHAT YOU ARE DOIN
@@ -90,9 +107,9 @@ public class Drivetrain extends SubsystemBase{
         return m_odometry.getPoseMeters();
     }
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        // Docs used .getRate(), this might be in the wrong unit but idk :)
-        // probably will work tho ;)
-        return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
+        // supposed to be degrees/sec, not revolution/min
+        // encoders are reversed :/
+        return new DifferentialDriveWheelSpeeds(6.*(m_leftEncoder.getVelocity()), 6.*(m_rightEncoder.getVelocity()));
     }
     public void resetOdometry(){
         // this isnt what max said to do i dont think but i mean :/
@@ -101,7 +118,7 @@ public class Drivetrain extends SubsystemBase{
     /** Prob unneccessary */
     public void resetEncoders() {
         m_leftEncoder.setPosition(0);
-        m_leftEncoder.setPosition(0);
+        m_rightEncoder.setPosition(0);
     }
     public RelativeEncoder getLeftEncoder () {
         return m_leftEncoder;
@@ -130,7 +147,8 @@ public class Drivetrain extends SubsystemBase{
     public void voltTankDrive (double leftVoltage, double rightVoltage) {
         m_leftMotorGroup.setVoltage(leftVoltage);
         m_rightMotorGroup.setVoltage(rightVoltage);
-        System.out.println(leftVoltage + ", " + rightVoltage);
+        System.out.println("VoltSet: " + leftVoltage + ", " + rightVoltage);
+        m_drivetrain.feed();
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
