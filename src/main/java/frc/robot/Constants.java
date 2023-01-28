@@ -42,7 +42,8 @@ public final class Constants {
   public static final int XBOX_CONTROLLER_PORT = 0;
   
   public static final int PIGEON_PORT = 42;
-  public static final int LED_PORT = 10;
+  //I have no clue what the led port is but i think its 0
+  public static final int LED_PORT = 0;
   
   // SysId, DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING
   // have a nice day - will
