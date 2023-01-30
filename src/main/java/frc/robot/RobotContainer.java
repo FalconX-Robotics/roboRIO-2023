@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.AutoBalance;
 import frc.robot.commands.TimedDriveForward;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CurvatureDrive;
@@ -80,6 +79,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
-    return new AutoBalance(m_drivetrain);
+    // return new AutoBalance(0, m_drivetrain);
+    return new TimedDriveForward(m_drivetrain);
   }
 }
