@@ -55,7 +55,7 @@ public final class Constants {
   public static final double kTrackWidthMeters = 0.53;
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
   public static final double kMaxSpeedMetersPerSeconds = 3.;
-  public static final double kMaxAccelerationMetersPerSecondSquared = 1.;
+  public static final double kMaxAccelerationMetersPerSecondSquared = .25;
   // Idk what a ramsete controller is but its important -w
   public static final double kRamseteB = 2.;
   public static final double kRamseteZeta = 0.7;

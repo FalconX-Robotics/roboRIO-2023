@@ -8,7 +8,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -32,7 +34,8 @@ public class Drivetrain extends SubsystemBase{
     private final double GEARING = 50.0/12.0*50./24.;
     private final double WHEEL_CIRCUMFERENCE = 0.1524 * Math.PI;
     // What is encoder
-    // Depracated for now
+    // Deleted for now
+    
     // private final Encoder m_leftEncoder = new Encoder(
     //     Constants.LeftEncoderPort1,
     //     Constants.LeftEncoderPort2,
@@ -52,7 +55,7 @@ public class Drivetrain extends SubsystemBase{
     private final DifferentialDrive m_drivetrain = new DifferentialDrive(m_leftMotorGroup, m_rightMotorGroup);
 
     // Odometry supposedly tracks the position over time?
-    private final DifferentialDriveOdometry m_odometry;
+    private DifferentialDriveOdometry m_odometry;
     
     public Drivetrain () {
         m_leftFrontMotor.setInverted(true);
@@ -73,15 +76,7 @@ public class Drivetrain extends SubsystemBase{
         m_rightEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
 
         // m_leftEncoder.setMeasurementPeriod(0);
-        resetEncoders();
-        m_gyro.reset();
-        zeroHeading();
-
-        m_odometry = new DifferentialDriveOdometry(
-            m_gyro.getRotation2d(),
-            m_leftEncoder.getPosition(),
-            m_rightEncoder.getPosition()            
-        );
+        resetLiterallyAlmostEverythingForAuto();
     }
     // Command base -> ab
     // private Command command = new
@@ -89,32 +84,44 @@ public class Drivetrain extends SubsystemBase{
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
-        m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
-        SmartDashboard.putNumber("leftEncoderPositionMeters", m_leftEncoder.getPosition());
-        SmartDashboard.putNumber("rightEncoderPositionMeters", m_rightEncoder.getPosition());
+        m_odometry.update(m_gyro.getRotation2d(), getLeftPositionMeters(), getRightPositionMeters());
+        SmartDashboard.putNumber("leftEncoderPositionMeters", getLeftPositionMeters());
+        SmartDashboard.putNumber("rightEncoderPositionMeters", getRightPositionMeters());
         SmartDashboard.putNumber("poseX", getPose().getX());
         SmartDashboard.putNumber("poseY", getPose().getY());
         SmartDashboard.putNumber("Rot", m_gyro.getYaw());
         SmartDashboard.putString("pose2d", m_odometry.toString());
+        SmartDashboard.putNumber("SpeedMetersPerSecond", m_rightEncoder.getVelocity());
+
+    }
+    public double getLeftPositionMeters () {
+        return -m_leftEncoder.getPosition();
+    }
+    public double getRightPositionMeters () {
+        return -m_rightEncoder.getPosition();
     }
     // ODOMETRY CODE BELOW
     // DO NOT TOUCH UNLESS YOU ALREADY KNOW WHAT YOU ARE DOIN
     // wil :)
     public Pose2d getPose() {
-        System.out.println("Pose: " + m_odometry.getPoseMeters().getX() + ", "
-            + m_odometry.getPoseMeters().getY() + ", "
-            + m_odometry.getPoseMeters().getRotation().getDegrees());
+        //System.out.println("Pose: " + m_odometry.getPoseMeters().getX() + ", "
+          //  + m_odometry.getPoseMeters().getY() + ", "
+            //+ m_odometry.getPoseMeters().getRotation().getDegrees());
         return m_odometry.getPoseMeters();
     }
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         // supposed to be degrees/sec, not revolution/min
         // encoders are reversed :/
-        return new DifferentialDriveWheelSpeeds(6.*(m_leftEncoder.getVelocity()), 6.*(m_rightEncoder.getVelocity()));
+        return new DifferentialDriveWheelSpeeds(-(m_leftEncoder.getVelocity()), -(m_rightEncoder.getVelocity()));
     }
     public void resetOdometry(){
         // this isnt what max said to do i dont think but i mean :/
-        m_odometry.resetPosition(m_gyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), getPose());
+        m_odometry.resetPosition(new Rotation2d(), 0., 0., new Pose2d());
     }
+    public void setOdometry(Rotation2d rotation, double leftDistanceMeters, double rightDistanceMeters, Pose2d pose) {
+        m_odometry.resetPosition(rotation, leftDistanceMeters, rightDistanceMeters, pose);
+    }
+
     /** Prob unneccessary */
     public void resetEncoders() {
         m_leftEncoder.setPosition(0);
@@ -133,6 +140,17 @@ public class Drivetrain extends SubsystemBase{
     public double getTurnRate() {
         return -m_gyro.getRate();
     }
+
+    public void resetLiterallyAlmostEverythingForAuto() {
+        resetEncoders();
+        m_gyro.reset();
+        zeroHeading();
+        m_odometry = new DifferentialDriveOdometry(
+            m_gyro.getRotation2d(),
+            getLeftPositionMeters(),
+            getRightPositionMeters()            
+        );
+    }
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
@@ -141,14 +159,22 @@ public class Drivetrain extends SubsystemBase{
         // System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
     }
     /** Please do not use for actual driving
-     *  Allows for auto code stuff
-     *  Don't make me explain -w
+     *  as it would really suck at driving.
+     *  Allows for auto code stuff,
+     *  don't make me explain -w
      */
     public void voltTankDrive (double leftVoltage, double rightVoltage) {
+        // m_leftFrontMotor.setInverted(false);
+        // m_leftBackMotor.setInverted(false);
+        // m_rightFrontMotor.setInverted(true);
+        // m_rightBackMotor.setInverted(true);
+        leftVoltage = MathUtil.clamp(leftVoltage, -3, 3);
+        rightVoltage = MathUtil.clamp(rightVoltage, -3, 3);
         m_leftMotorGroup.setVoltage(leftVoltage);
         m_rightMotorGroup.setVoltage(rightVoltage);
-        System.out.println("VoltSet: " + leftVoltage + ", " + rightVoltage);
-        m_drivetrain.feed();
+        
+        //System.out.println("VoltSet: " + leftVoltage + ", " + rightVoltage);
+        m_drivetrain.feed(); // idk what this does but it sounds cool
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
