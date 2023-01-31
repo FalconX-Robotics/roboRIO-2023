@@ -2,21 +2,35 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.sensors.BasePigeonSimCollection;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.simulation.RelativeEncoderSim;
 
 public class Drivetrain extends SubsystemBase{
     // Define motors
@@ -44,8 +58,8 @@ public class Drivetrain extends SubsystemBase{
     //     Constants.LeftEncoderReversed
     // );
 
-    private final RelativeEncoder m_leftEncoder = m_leftFrontMotor.getEncoder();
-    private final RelativeEncoder m_rightEncoder = m_rightFrontMotor.getEncoder();
+    private RelativeEncoder m_leftEncoder = m_leftFrontMotor.getEncoder();
+    private RelativeEncoder m_rightEncoder = m_rightFrontMotor.getEncoder();
 
     // Drivetrain & gyro
     private final WPI_PigeonIMU m_gyro = new WPI_PigeonIMU(Constants.PIGEON_PORT);
@@ -82,6 +96,20 @@ public class Drivetrain extends SubsystemBase{
             m_leftEncoder.getPosition(),
             m_rightEncoder.getPosition()            
         );
+
+        if (RobotBase.isSimulation()) {
+            m_drivetrainSimulator = new DifferentialDrivetrainSim(
+                DCMotor.getNEO(2), 
+                8.89,
+                4,
+                30,
+                Units.inchesToMeters(3), 
+                0.7, 
+                VecBuilder.fill(0.001, 0.001, 0.001, 0.01, 0.01, 0.005, 0.005));
+
+            m_leftEncoder = new RelativeEncoderSim();
+            m_rightEncoder = new RelativeEncoderSim();
+        }
     }
     // Command base -> ab
     // private Command command = new
@@ -158,5 +186,30 @@ public class Drivetrain extends SubsystemBase{
 
     public void curvatureDrive (double leftPercentY, double rightPercentY) {
         m_drivetrain.curvatureDrive(leftPercentY, rightPercentY, false);
+    }
+
+    private DifferentialDrivetrainSim m_drivetrainSimulator;
+    private BasePigeonSimCollection m_gyroSim = m_gyro.getSimCollection();
+    private Field2d m_field = new Field2d();
+    @Override
+    public void simulationPeriodic() {
+        m_drivetrainSimulator.setInputs(m_leftMotorGroup.get() * RobotController.getInputVoltage(),
+                m_rightMotorGroup.get() * RobotController.getInputVoltage());
+
+        m_drivetrainSimulator.update(0.02);
+
+        RelativeEncoderSim leftEncoder = (RelativeEncoderSim) m_leftEncoder;
+        RelativeEncoderSim rightEncoder = (RelativeEncoderSim) m_rightEncoder;
+
+        leftEncoder.setSimulationPositionMeters(m_drivetrainSimulator.getLeftPositionMeters());
+        rightEncoder.setSimulationPositionMeters(m_drivetrainSimulator.getRightPositionMeters());
+        leftEncoder.setSimulationVelocityMetersPerSecond(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+        rightEncoder.setSimulationVelocityMetersPerSecond(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+
+        m_gyroSim.setRawHeading(m_drivetrainSimulator.getHeading().getDegrees());
+
+        Transform2d startPostion = new Transform2d(new Translation2d(0, 0), new Rotation2d());
+        m_field.setRobotPose(m_odometry.getPoseMeters().transformBy(startPostion));
+        SmartDashboard.putData(m_field);
     }
 }
