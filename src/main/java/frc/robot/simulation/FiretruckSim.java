@@ -79,7 +79,7 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
                     0,
                     - E_G * E_G * E_K_t / (E_R * E_r * E_r * E_m * E_K_v)
             ),
-            Matrix.mat(Nat.N4(), Nat.N2()).fill()
+            Matrix.mat(Nat.N4(), Nat.N2()).fill(
                 0, 0,
                 0, 0,
                 0, 0,
