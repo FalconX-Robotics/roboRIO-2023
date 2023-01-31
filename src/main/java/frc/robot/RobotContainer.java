@@ -10,6 +10,7 @@ import frc.robot.commands.TimedDriveForward;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SlowModeCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.subsystems.Drivetrain;
@@ -50,7 +51,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    
+    configureButtonBindings();
   }
 
   /**
@@ -68,7 +69,8 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    
+    Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
+    aButton.whileTrue(new SlowModeCommand());
   }
 
   /**
