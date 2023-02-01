@@ -71,9 +71,9 @@ public class Drivetrain extends SubsystemBase{
         // m_leftEncoder.setInverted(true);
         // m_rightEncoder.setInverted(true);
         m_leftEncoder.setPositionConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
-        m_leftEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
+        m_leftEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE/GEARING/60);//magic number :D
         m_rightEncoder.setPositionConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
-        m_rightEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE/GEARING);
+        m_rightEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE/GEARING/60);
 
         // m_leftEncoder.setMeasurementPeriod(0);
         resetLiterallyAlmostEverythingForAuto();
