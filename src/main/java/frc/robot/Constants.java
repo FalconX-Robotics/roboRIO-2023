@@ -30,6 +30,10 @@ public final class Constants {
   public static final int FRONT_RIGHT_MOTOR_PORT = 1;
   public static final int BACK_RIGHT_MOTOR_PORT = 4;
 
+  // Arm Ports
+  public static final int ARM_ROTATION_MOTOR_PORT = 10;
+  public static final int ARM_EXTENSION_MOTOR_PORT = 12;
+
   // WHAT IS AN ENCODER??? WHY WHAT HOW WHEN AAAAAA
   // temporary values
   public static final int LeftEncoderPort1 = 6;
