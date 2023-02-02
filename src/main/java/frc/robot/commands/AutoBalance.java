@@ -8,13 +8,13 @@ import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalance extends CommandBase {
 
-    enum State {
+    public static enum State {
         MOVE_FORWARD,
         MOVE_UP,
         BALANCE
     }
 
-    State state = State.MOVE_FORWARD;
+    public static State state = State.MOVE_FORWARD;
 
     Drivetrain m_drivetrain;
     PigeonIMU gyro;
@@ -50,8 +50,7 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        // TODO Auto-generated method stub
-        super.end(interrupted);
+
     }
 
     @Override
