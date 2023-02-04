@@ -9,6 +9,7 @@ import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -23,6 +24,9 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DataLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -70,6 +74,13 @@ public class Drivetrain extends SubsystemBase{
 
     // Odometry supposedly tracks the position over time?
     private DifferentialDriveOdometry m_odometry;
+
+    DataLog m_log = DataLogManager.getLog();
+    DoubleLogEntry m_leftPositionMetersLog = new DoubleLogEntry(m_log, "/drivetrain/leftPostionMeters");
+    DoubleLogEntry m_rightPositionMetersLog = new DoubleLogEntry(m_log, "/drivetrain/rightPostionMeters");
+    DoubleLogEntry m_rotLog = new DoubleLogEntry(m_log, "/drivetrain/rot");
+    DoubleLogEntry m_leftVelocityLog = new DoubleLogEntry(m_log, "/drivetrain/leftVelocityMetersPerSecond");
+    DoubleLogEntry m_rightVelocityLog = new DoubleLogEntry(m_log, "/drivetrain/rightVelocityMetersPerSecond");
     
     public Drivetrain () {
         m_leftFrontMotor.setInverted(true);
@@ -117,13 +128,17 @@ public class Drivetrain extends SubsystemBase{
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
         m_odometry.update(m_gyro.getRotation2d(), getLeftPositionMeters(), getRightPositionMeters());
         SmartDashboard.putNumber("leftEncoderPositionMeters", getLeftPositionMeters());
+        m_leftPositionMetersLog.append(getLeftPositionMeters());
         SmartDashboard.putNumber("rightEncoderPositionMeters", getRightPositionMeters());
+        m_rightPositionMetersLog.append(getRightPositionMeters());
         SmartDashboard.putNumber("poseX", getPose().getX());
         SmartDashboard.putNumber("poseY", getPose().getY());
         SmartDashboard.putNumber("Rot", m_gyro.getYaw());
+        m_rotLog.append(m_gyro.getYaw());
         SmartDashboard.putString("pose2d", m_odometry.toString());
         SmartDashboard.putNumber("SpeedMetersPerSecond", m_rightEncoder.getVelocity());
-
+        m_leftVelocityLog.append(getWheelSpeeds().leftMetersPerSecond);
+        m_rightVelocityLog.append(getWheelSpeeds().rightMetersPerSecond);
     }
     public double getLeftPositionMeters () {
         return -m_leftEncoder.getPosition();
