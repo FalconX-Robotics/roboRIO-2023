@@ -74,16 +74,27 @@ public class RobotContainer {
     
     // Main states for arm
     Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
-    aButton.whileTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
+    aButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
 
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
-    bButton.whileTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
+    bButton.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
 
     Trigger xButton = new JoystickButton(m_xboxController, XboxController.Button.kX.value);
-    xButton.whileTrue(new MoveArm(m_arm, MoveArm.State.MID_ARM));
+    xButton.onTrue(new MoveArm(m_arm, MoveArm.State.MID_ARM));
   
     Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kY.value);
-    yButton.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));  
+    yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));  
+
+
+    Trigger leftDPad = new JoystickButton(m_xboxController, XboxController)
+
+
+    Trigger rTrigger = new Trigger(() -> {
+      return m_xboxController.getRightTriggerAxis() > 0.3;
+    });
+    
+    rTrigger.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
+  
   }
 
   /**

@@ -91,22 +91,30 @@ public class MoveArm extends CommandBase {
   // The different states for the arm
   private void retractedState() {
     System.out.println("Moving to retracted state");
-    m_arm.moveToPosition(10, 2);
+    if (m_arm.moveToPosition(10, 2)) {
+      end(false); 
+    }
   }
 
   private void groundArmState() {
     System.out.println("Moving to ground arm state");
-    m_arm.moveToPosition(45, 12);
+    if (m_arm.moveToPosition(45, 12)) {
+      end(false);
+    }
   }
   
   private void midArmState() {
     System.out.println("Moving to mid arm state");
-    m_arm.moveToPosition(90, 12);
+    if (m_arm.moveToPosition(90, 12)) {
+      end(false);
+    }
   }
 
   private void humanIntakeState() {
     System.out.println("Moving to human intake state");
-    m_arm.moveToPosition(115, 12);
+    if (m_arm.moveToPosition(115, 12)) {
+      end(false);
+    }
   }
 
   private void movingState() {
