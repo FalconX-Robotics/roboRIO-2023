@@ -69,7 +69,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
+    Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
     aButton.whileTrue(new SlowModeCommand());
   }
 

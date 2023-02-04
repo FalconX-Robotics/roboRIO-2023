@@ -94,7 +94,13 @@ public class Drivetrain extends SubsystemBase{
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
     public void arcadeDrive (double fowardPercentOutput, double turnPercent) {
-        m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
+        if (slowModeOn) {
+            m_drivetrain.arcadeDrive(fowardPercentOutput / 3, turnPercent / 2);
+        } else {
+            m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
+
+        }
+
     }
 
     public void curvatureDrive (double leftPercentY, double rightPercentY) {
