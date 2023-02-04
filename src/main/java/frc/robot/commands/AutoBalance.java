@@ -8,22 +8,24 @@ import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalance extends CommandBase {
 
-    enum State {
+    enum BalanceState {
         MOVE_FORWARD,
         MOVE_UP,
         BALANCE
     }
 
-    State state = State.MOVE_FORWARD;
+    BalanceState m_balanceState = BalanceState.MOVE_FORWARD;
 
     Drivetrain m_drivetrain;
     PigeonIMU gyro;
     boolean balanced = false;
+    double startingPitch;
 
     
 
-    AutoBalance(Drivetrain drivetrain) {
+    public AutoBalance(Drivetrain drivetrain) {
         m_drivetrain = drivetrain;
+        addRequirements(drivetrain);
     }
     
     @Override
@@ -31,11 +33,12 @@ public class AutoBalance extends CommandBase {
         addRequirements(m_drivetrain);
         gyro = m_drivetrain.getGyro();
         gyro.setYaw(0.0);
+        startingPitch = gyro.getPitch();
     }
 
     @Override
     public void execute() {
-        switch (state) {
+        switch (m_balanceState) {
             case MOVE_FORWARD:
                 moveForward();
                 break;
@@ -63,19 +66,19 @@ public class AutoBalance extends CommandBase {
     }
 
     private void moveForward() {
-        if (!(gyro.getPitch() > 15)) {
-            m_drivetrain.tankDrive(0.3, 0.3);
+        System.out.println("Pitch at " + gyro.getPitch());
+        if (Math.abs(gyro.getPitch() - startingPitch) < 5) {
+            m_drivetrain.tankDrive(-0.2, -0.2);
         } else {
-            state = State.MOVE_UP;
+            m_balanceState = BalanceState.MOVE_UP;
         }
-
     }
 
     private void moveUp() {
-        if (gyro.getPitch() > 5) {
-            m_drivetrain.tankDrive(0.3, 0.3);
+        if (Math.abs(gyro.getPitch() - startingPitch) > 5) {
+            m_drivetrain.tankDrive(-0.3, -0.3);
         } else {
-            state = State.BALANCE;
+            m_balanceState = BalanceState.BALANCE;
         }
     }
 
