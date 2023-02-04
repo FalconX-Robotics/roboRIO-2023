@@ -48,19 +48,6 @@ public class Arm extends SubsystemBase {
     m_rotationArm.setInverted(false);
     m_extendArm.setInverted(false);
 
-      // // GOING TO MOVE SOMETIME I GUESS
-      // // Different states using moveToPosition
-      // // Retracted State
-      // moveToPosition(0,0);
-
-      // // Ground Arm
-      // moveToPosition(45,1);
-
-      // // Mid Arm
-      // moveToPosition(90,1);
-
-      // // Human Intake
-      // moveToPosition(100, 1);
   }
 
   public double getRotationArmPosition() {
@@ -71,6 +58,7 @@ public class Arm extends SubsystemBase {
     return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius * armExtensionGearRatio * 2 * Math.PI;
   }
 
+  // Moves arm to position using angle and extend (also stops it when needs to)
   public void moveToPosition(double angle, double extend) {
     m_targetAngle = angle;
     m_targetExtend = extend;
@@ -80,12 +68,16 @@ public class Arm extends SubsystemBase {
       m_rotationArm.set(-0.1);
     } else if (getRotationArmPosition() < m_targetAngle - 5) {
       m_rotationArm.set(0.1);
+    } else {
+      m_rotationArm.set(0); 
     }
 
     if (getExtensionArmPosition() > m_targetExtend + 2 ) {
       m_extendArm.set(-0.1);
     } else if (getExtensionArmPosition() < m_targetExtend - 2) {
       m_extendArm.set( 0.1);
+    } else {
+      m_rotationArm.set(0); 
     }
 
     // this is really terrible -- logan
@@ -96,6 +88,7 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  // Enum states for arm
   private enum ArmState {
     READY,
     ROTATE_WAITING,
@@ -106,7 +99,7 @@ public class Arm extends SubsystemBase {
     m_extendArm.getEncoder().setPosition(0);
   }
 
-  private void updateArmState() {
+  private void ArmState() {
 
     switch (m_currentArmState) {
       case READY: 

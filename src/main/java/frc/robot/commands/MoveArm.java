@@ -17,6 +17,7 @@ public class MoveArm extends CommandBase {
   
   private Arm m_arm;
 
+  // Different enum states/positions for arm
   public static enum State {
     RETRACTED, 
     GROUND_ARM, 
@@ -87,27 +88,28 @@ public class MoveArm extends CommandBase {
     return false;
   }
 
+  // The different states for the arm
   private void retractedState() {
     System.out.println("Moving to retracted state");
-    m_arm.moveToPosition(0.1, 0);
+    m_arm.moveToPosition(10, 2);
   }
 
   private void groundArmState() {
     System.out.println("Moving to ground arm state");
-    m_arm.moveToPosition(0.25, 1);
+    m_arm.moveToPosition(45, 12);
   }
   
   private void midArmState() {
     System.out.println("Moving to mid arm state");
-    m_arm.moveToPosition(0.5, 1);
+    m_arm.moveToPosition(90, 12);
   }
 
   private void humanIntakeState() {
     System.out.println("Moving to human intake state");
-    m_arm.moveToPosition(0.75, 1);
+    m_arm.moveToPosition(115, 12);
   }
 
-  private void movingState() { 
+  private void movingState() {
     System.out.println("Moving to moveing state? idk");
 
     // whats this do????????
