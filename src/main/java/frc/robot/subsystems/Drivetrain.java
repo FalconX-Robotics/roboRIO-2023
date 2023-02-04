@@ -125,6 +125,6 @@ public class Drivetrain extends SubsystemBase{
  * No ones ever going to see this so im putting this down here
  * PID
  *  P - 92.2
- *  I- ???
+ *  I- P / D - 12.6
  *  D - 7.3
  */
