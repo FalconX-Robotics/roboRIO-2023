@@ -26,6 +26,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DataLogEntry;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -81,6 +82,7 @@ public class Drivetrain extends SubsystemBase{
     DoubleLogEntry m_rotLog = new DoubleLogEntry(m_log, "/drivetrain/rot");
     DoubleLogEntry m_leftVelocityLog = new DoubleLogEntry(m_log, "/drivetrain/leftVelocityMetersPerSecond");
     DoubleLogEntry m_rightVelocityLog = new DoubleLogEntry(m_log, "/drivetrain/rightVelocityMetersPerSecond");
+    DoubleArrayLogEntry m_poseLog = new DoubleArrayLogEntry(m_log, "/drivetrain/pose");
     
     public Drivetrain () {
         m_leftFrontMotor.setInverted(true);
@@ -139,6 +141,9 @@ public class Drivetrain extends SubsystemBase{
         SmartDashboard.putNumber("SpeedMetersPerSecond", m_rightEncoder.getVelocity());
         m_leftVelocityLog.append(getWheelSpeeds().leftMetersPerSecond);
         m_rightVelocityLog.append(getWheelSpeeds().rightMetersPerSecond);
+        Pose2d pose = getPose();
+        double[] poseRaw = {pose.getX(), pose.getY(), pose.getRotation().getRadians()};
+        m_poseLog.append(poseRaw);
     }
     public double getLeftPositionMeters () {
         return -m_leftEncoder.getPosition();
