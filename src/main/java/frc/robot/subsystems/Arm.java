@@ -99,13 +99,9 @@ public class Arm extends SubsystemBase {
     // this is really terrible -- logan
   }
 
-  public void manualMoveArm(ManualArm.MovementType movement, double speed) {
-    if (movement == ManualArm.MovementType.ROTATION) {
-      m_rotationArm.set(0.1 * speed);
-    }
-    if (movement == ManualArm.MovementType.EXTENSION) {
-      m_extendArm.set(0.1 * speed);
-    }
+  public void manualMoveArm(double rotationSpeed, double extensionSpeed) {
+    m_rotationArm.set(rotationSpeed * 0.1);
+    m_extendArm.set(extensionSpeed * 0.1);
   }
 
   @Override

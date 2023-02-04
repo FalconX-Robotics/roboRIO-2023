@@ -11,6 +11,7 @@ import frc.robot.commands.TimedDriveForward;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ManualArm;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
@@ -20,8 +21,10 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -85,8 +88,23 @@ public class RobotContainer {
     Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kY.value);
     yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));  
 
+    POVButton dPadUp = new POVButton(m_xboxController, 0);
+    POVButton dPadUpRight = new POVButton(m_xboxController, 45);
+    POVButton dPadRight = new POVButton(m_xboxController, 90);
+    POVButton dPadDownRight = new POVButton(m_xboxController, 135);
+    POVButton dPadDown = new POVButton(m_xboxController, 180);
+    POVButton dPadDownLeft = new POVButton(m_xboxController, 225);
+    POVButton dPadLeft = new POVButton(m_xboxController, 270);
+    POVButton dPadUpLeft = new POVButton(m_xboxController, 315);
 
-    Trigger leftDPad = new JoystickButton(m_xboxController, XboxController)
+    dPadUp.onTrue(new ManualArm(1, 0, m_arm));
+    dPadUp.onTrue(new ManualArm(1, 1, m_arm));
+    dPadUp.onTrue(new ManualArm(0, 1, m_arm));
+    dPadUp.onTrue(new ManualArm( -1, 1, m_arm));
+    dPadUp.onTrue(new ManualArm(-1, 0, m_arm));
+    dPadUp.onTrue(new ManualArm(-1, -1, m_arm));
+    dPadUp.onTrue(new ManualArm(0, -1, m_arm));
+    dPadUp.onTrue(new ManualArm(1, -1, m_arm));
 
 
     Trigger rTrigger = new Trigger(() -> {
