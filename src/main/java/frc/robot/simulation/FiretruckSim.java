@@ -132,6 +132,10 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
         return m_y.get(0, 0);
     }
 
+    public double getArmAngleRadsPerSecond() {
+        return m_x.get(1, 0);
+    }
+
     private double getArmCOGDistanceMeters(double extenderDistanceMeters) {
         // D_fixed * (m_arm - m_carriage) + D_carriage * m_carriage = D_arm * m_arm;
         double fixedMassKg = m_armParameters.m_armMassKg - m_extenderParameters.m_carriageMassKg;
@@ -168,6 +172,10 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
 
     public double getExtenderDistanceMeters() {
         return m_y.get(2, 0);
+    }
+
+    public double getExtendVelocityMetersPerSecond() {
+        return m_x.get(3, 0);
     }
 
     protected Matrix<N4, N1> updateX(Matrix<N4, N1> currentXhat, Matrix<N2, N1> currentU, double dtSeconds) {

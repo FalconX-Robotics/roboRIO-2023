@@ -5,11 +5,16 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.simulation.FiretruckSim;
 
 /**
  * <strong> Aperature Science </strong>
@@ -29,8 +34,10 @@ public class Arm extends SubsystemBase {
   // Private variable for two neo motors
   private double deez = 69.420; // Julian was here
   //Julian was there
-  private final CANSparkMax m_rotationArm  = new CANSparkMax(Constants.ARM_ROTATION_MOTOR_PORT, MotorType.kBrushless);
-  private final CANSparkMax m_extendArm = new CANSparkMax(Constants.ARM_EXTENSION_MOTOR_PORT, MotorType.kBrushless);
+  private CANSparkMax m_rotationArm  = new CANSparkMax(Constants.ARM_ROTATION_MOTOR_PORT, MotorType.kBrushless);
+  private CANSparkMax m_extendArm = new CANSparkMax(Constants.ARM_EXTENSION_MOTOR_PORT, MotorType.kBrushless);
+  private RelativeEncoder m_rotationEncoder;
+  private RelativeEncoder m_extendEncoder;
 
   private double m_targetAngle = 0;
   private double m_targetExtend = 0;
@@ -48,14 +55,21 @@ public class Arm extends SubsystemBase {
     m_rotationArm.setInverted(false);
     m_extendArm.setInverted(false);
 
+    if (Robot.isReal()) {
+      m_rotationEncoder = m_rotationArm.getEncoder();
+      m_armEncoder = m_extendArm.getEncoder();
+    } else {
+      m_rotationEncoder = new RelativeEncoderSim("Rotation Encoder");
+      m_extendEncoder = new RelativeEncoderSim("Extend Encoder");
+    }
   }
 
   public double getRotationArmPosition() {
-    return m_rotationArm.getEncoder().getPosition() * 360 * armRotationGearRatio;
+    return m_rotationEncoder.getPosition() * 360 * armRotationGearRatio;
   }
 
   public double getExtensionArmPosition() {
-    return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius * armExtensionGearRatio * 2 * Math.PI;
+    return m_extendEncoder.getPosition() * armExtensionGearRadius * armExtensionGearRatio * 2 * Math.PI;
   }
 
   // Moves arm to position using angle and extend (also stops it when needs to)
@@ -126,5 +140,18 @@ public class Arm extends SubsystemBase {
 
   private boolean isExtenderSafeForArm() {
     return !(m_targetAngle < 0.2);
+  }
+
+  private FiretruckSim armSimulation;
+  @Override
+  public void simulationPeriodic() {
+    armSimulation.setInput(m_rotationArm.get() * RobotController.getBatteryVoltage(), 
+        m_extendArm.get() * RobotController.getBatteryVoltage());
+    
+    // builtin encoder on NEO
+    m_rotationEncoder.setSimulationPosition(armSimulation.getArmAngleRads() / 2. / Math.PI * armRotationGearRatio);
+    m_rotationEncoder.setSimulationVelocity(armSimulation.getArmAngleRadsPerSecond() / 2. / Math.PI * armRotationGearRatio);
+    m_extendEncoder.setSimulationPosition(armSimulation.getExtenderDistanceMeters());
+    m_extendEncoder.setSimulationVelocity(armSimulation.getExtendVelocityMetersPerSecond());
   }
 }
