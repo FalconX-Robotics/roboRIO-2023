@@ -29,8 +29,8 @@ public class Arm extends SubsystemBase {
   // Private variable for two neo motors
   private double deez = 69.420; // Julian was here
   //Julian was there
-  private final CANSparkMax m_rotationArm  = new CANSparkMax(Constants.ARM_ROTATION_MOTOR_PORT, MotorType.kBrushless);
-  private final CANSparkMax m_extendArm = new CANSparkMax(Constants.ARM_EXTENSION_MOTOR_PORT, MotorType.kBrushless);
+  private MotorController m_rotationArm  = new CANSparkMax(Constants.ARM_ROTATION_MOTOR_PORT, MotorType.kBrushless);
+  private MotorController m_extendArm = new CANSparkMax(Constants.ARM_EXTENSION_MOTOR_PORT, MotorType.kBrushless);
 
   private double m_targetAngle = 0;
   private double m_targetExtend = 0;
@@ -126,5 +126,10 @@ public class Arm extends SubsystemBase {
 
   private boolean isExtenderSafeForArm() {
     return !(m_targetAngle < 0.2);
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    
   }
 }

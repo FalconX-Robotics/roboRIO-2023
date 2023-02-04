@@ -1,0 +1,5 @@
+
+
+public CanSparkMaxSim extends CanSparkMax {
+    
+}
