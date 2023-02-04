@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.simulation.MotorControllerSim;
 import frc.robot.simulation.RelativeEncoderSim;
 
 public class Drivetrain extends SubsystemBase{
@@ -38,11 +39,11 @@ public class Drivetrain extends SubsystemBase{
     // Left motors
     private final CANSparkMax m_leftFrontMotor  = new CANSparkMax(Constants.FRONT_LEFT_MOTOR_PORT, MotorType.kBrushless);
     private final CANSparkMax m_leftBackMotor   = new CANSparkMax(Constants.BACK_LEFT_MOTOR_PORT, MotorType.kBrushless);
-    private final MotorControllerGroup m_leftMotorGroup = new MotorControllerGroup(m_leftFrontMotor, m_leftBackMotor);
+    private MotorController m_leftMotorGroup = new MotorControllerGroup(m_leftFrontMotor, m_leftBackMotor);
     // Right motors
     private final CANSparkMax m_rightFrontMotor = new CANSparkMax(Constants.FRONT_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
-    private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
+    private MotorController m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
     
     private final double GEARING = 50.0/12.0*50./24.;
     private final double WHEEL_CIRCUMFERENCE = 0.1524 * Math.PI;
@@ -65,7 +66,7 @@ public class Drivetrain extends SubsystemBase{
 
     // Drivetrain & gyro
     private final WPI_PigeonIMU m_gyro = new WPI_PigeonIMU(Constants.PIGEON_PORT);
-    private final DifferentialDrive m_drivetrain = new DifferentialDrive(m_leftMotorGroup, m_rightMotorGroup);
+    private DifferentialDrive m_drivetrain = new DifferentialDrive(m_leftMotorGroup, m_rightMotorGroup);
 
     // Odometry supposedly tracks the position over time?
     private DifferentialDriveOdometry m_odometry;
@@ -103,6 +104,9 @@ public class Drivetrain extends SubsystemBase{
 
             m_leftEncoder = new RelativeEncoderSim();
             m_rightEncoder = new RelativeEncoderSim();
+            m_leftMotorGroup = new MotorControllerSim("Left Motor Group");
+            m_rightMotorGroup = new MotorControllerSim("Right Motor Group");
+            m_drivetrain = new DifferentialDrive(m_leftMotorGroup, m_rightMotorGroup);
         }
     }
     // Command base -> ab
@@ -154,10 +158,10 @@ public class Drivetrain extends SubsystemBase{
         m_leftEncoder.setPosition(0);
         m_rightEncoder.setPosition(0);
     }
-    public RelativeEncoder getLeftEncoder () {
+    private RelativeEncoder getLeftEncoder () {
         return m_leftEncoder;
     }
-    public RelativeEncoder getRightEncoder () {
+    private RelativeEncoder getRightEncoder () {
         return m_rightEncoder;
     }
     /** Also prob unneccessary */
@@ -195,12 +199,10 @@ public class Drivetrain extends SubsystemBase{
         // m_leftBackMotor.setInverted(false);
         // m_rightFrontMotor.setInverted(true);
         // m_rightBackMotor.setInverted(true);
-        leftVoltage = MathUtil.clamp(leftVoltage, -3, 3);
-        rightVoltage = MathUtil.clamp(rightVoltage, -3, 3);
         m_leftMotorGroup.setVoltage(leftVoltage);
         m_rightMotorGroup.setVoltage(rightVoltage);
         
-        //System.out.println("VoltSet: " + leftVoltage + ", " + rightVoltage);
+        System.out.println("VoltSet: " + leftVoltage + ", " + rightVoltage);
         m_drivetrain.feed(); // idk what this does but it sounds cool
     }
     // Define arcadeDrive
@@ -226,10 +228,11 @@ public class Drivetrain extends SubsystemBase{
         RelativeEncoderSim leftEncoder = (RelativeEncoderSim) m_leftEncoder;
         RelativeEncoderSim rightEncoder = (RelativeEncoderSim) m_rightEncoder;
 
-        leftEncoder.setSimulationPositionMeters(m_drivetrainSimulator.getLeftPositionMeters());
-        rightEncoder.setSimulationPositionMeters(m_drivetrainSimulator.getRightPositionMeters());
-        leftEncoder.setSimulationVelocityMetersPerSecond(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
-        rightEncoder.setSimulationVelocityMetersPerSecond(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+        // physical encoders are reversed from wheel direction
+        leftEncoder.setSimulationPositionMeters(-m_drivetrainSimulator.getLeftPositionMeters());
+        rightEncoder.setSimulationPositionMeters(-m_drivetrainSimulator.getRightPositionMeters());
+        leftEncoder.setSimulationVelocityMetersPerSecond(-m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+        rightEncoder.setSimulationVelocityMetersPerSecond(-m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
         m_gyroSim.setRawHeading(m_drivetrainSimulator.getHeading().getDegrees());
 
