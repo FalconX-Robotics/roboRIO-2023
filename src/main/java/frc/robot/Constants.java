@@ -36,10 +36,10 @@ public final class Constants {
 
   // WHAT IS AN ENCODER??? WHY WHAT HOW WHEN AAAAAA
   // temporary values
-  public static final int LeftEncoderPort1 = 6;
-  public static final int LeftEncoderPort2 = 6;
-  public static final int RightEncoderPort1 = 6;
-  public static final int RightEncoderPort2 = 2;
+  // public static final int LeftEncoderPort1 = 6;
+  // public static final int LeftEncoderPort2 = 6;
+  // public static final int RightEncoderPort1 = 6;
+  // public static final int RightEncoderPort2 = 2;
   public static final boolean LeftEncoderReversed = true;
   public static final boolean RightEncoderReversed = false;
 

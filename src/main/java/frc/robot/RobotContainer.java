@@ -6,13 +6,15 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.AutoBalance;
+// import frc.robot.commands.AutoBalance;
 import frc.robot.commands.TimedDriveForward;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.MoveArm;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -33,14 +35,13 @@ public class RobotContainer {
   private final XboxController m_xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
   // private final Camera m_camera = new Camera();
   private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Arm m_arm = new Arm();
   private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
   private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-      // Dont delete this code or it breakes  ⬆
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   //private final CommandXboxController m_driverController =
@@ -65,11 +66,24 @@ public class RobotContainer {
    */
    
   private void configureBindings() {
+    configureButtonBindings();
     m_drivetrain.setDefaultCommand(arcadeDrive);
   }
 
   private void configureButtonBindings() {
     
+    // Main states for arm
+    Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
+    aButton.whileTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
+
+    Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
+    bButton.whileTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
+
+    Trigger xButton = new JoystickButton(m_xboxController, XboxController.Button.kX.value);
+    xButton.whileTrue(new MoveArm(m_arm, MoveArm.State.MID_ARM));
+  
+    Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kY.value);
+    yButton.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));  
   }
 
   /**
@@ -80,6 +94,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
-    return new AutoBalance(m_drivetrain);
+    return new TimedDriveForward(m_drivetrain);
   }
 }
