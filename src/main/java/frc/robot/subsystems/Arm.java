@@ -32,9 +32,9 @@ public class Arm extends SubsystemBase {
   //Julian was there
   private final CANSparkMax m_rotationArm  = new CANSparkMax(Constants.ARM_ROTATION_MOTOR_PORT, MotorType.kBrushless);
   private final CANSparkMax m_extendArm = new CANSparkMax(Constants.ARM_EXTENSION_MOTOR_PORT, MotorType.kBrushless);
-
+      //Julian is everywhere...
   private double m_targetAngle = 0;
-  private double m_targetExtend = 0;
+  private double m_targetExtension = 0;
   private boolean m_isNewTarget = false;
   private ArmState m_currentArmState = ArmState.READY;
 
@@ -63,14 +63,17 @@ public class Arm extends SubsystemBase {
 
   // Moves arm to position using angle and extend (also stops it when needs to)
   public boolean moveToPosition(double angle, double extend) {
+    // For testing, remove when avaliable.
+    System.out.println("Changing angle to approximately " + Math.floor(angle) + " degrees");
+    System.out.println("Moving extender to approximately " + Math.floor(extend) + " inches");
+
     m_targetAngle = angle;
-    m_targetExtend = extend;
+    m_targetExtension = extend;
     m_isNewTarget = true;
     boolean armRotationCheck = false;
     boolean armExtensionCheck = false;
 
-
-    
+    //moves the rotation to the target angle with 5 degrees of leniancy
     if (getRotationArmPosition() > m_targetAngle + 5 ) {
       m_rotationArm.set(-0.5);
     } else if (getRotationArmPosition() < m_targetAngle - 5) {
@@ -79,10 +82,11 @@ public class Arm extends SubsystemBase {
       m_rotationArm.set(0);
       armRotationCheck = true;
     }
+    //moves the extender to the target length with 1 inches of leniancy
 
-    if (getExtensionArmPosition() > m_targetExtend + 2 ) {
+    if (getExtensionArmPosition() > m_targetExtension + 1 ) {
       m_extendArm.set(-0.5);
-    } else if (getExtensionArmPosition() < m_targetExtend - 2) {
+    } else if (getExtensionArmPosition() < m_targetExtension - 1) {
       m_extendArm.set(0.5);
     } else {
       m_rotationArm.set(0); 
@@ -106,7 +110,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    moveToPosition(m_targetAngle, m_targetExtend);
+    moveToPosition(m_targetAngle, m_targetExtension);
     // This method will be called once per scheduler run
   }
 
@@ -120,9 +124,17 @@ public class Arm extends SubsystemBase {
   private void resetExtenderEncoder() {
     m_extendArm.getEncoder().setPosition(0);
   }
-
-  private void ArmState() {
-
+  private void resetExtenderEncoder(double position) {
+    m_extendArm.getEncoder().setPosition(position);
+  }
+  /**
+   * <h4>currently unused</h4>
+   * Changes the current arm state to update its value
+   * <p>ROTATE WAITING is when the arm has a new target but cannot move for some reason.
+   * <p>ROTATING is when the arm is currently moving.
+   * <p>READY is when the arm is in position and has no new target.
+   */
+  private void UpdateArmState() {
     switch (m_currentArmState) {
       case READY: 
         m_currentArmState = ArmState.ROTATE_WAITING;
@@ -140,7 +152,7 @@ public class Arm extends SubsystemBase {
         break;
     }// BEIJING EMBASSY was here
 
-    }
+  }
 
   private boolean inPosition() {
     return false;
