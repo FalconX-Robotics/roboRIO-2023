@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.XboxController;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kArmControllerPort = 1;
   }
   // Drivetrain Ports
   public static final int FRONT_LEFT_MOTOR_PORT = 2;
@@ -44,6 +45,7 @@ public final class Constants {
   public static final boolean RightEncoderReversed = false;
 
   public static final int XBOX_CONTROLLER_PORT = 0;
+  public static final int XBOX_CONTROLLER_PORT2 = 1;
   
   public static final int PIGEON_PORT = 42;
   public static final int LED_PORT = 10;
