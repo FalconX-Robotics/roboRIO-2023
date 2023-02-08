@@ -8,13 +8,13 @@ import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalance extends CommandBase {
 
-    public static enum State {
+    public static enum BalanceState {
         MOVE_FORWARD,
         MOVE_UP,
         BALANCE
     }
 
-    public State state = State.MOVE_FORWARD;
+    public BalanceState m_balanceState = BalanceState.MOVE_FORWARD;
 
     Drivetrain m_drivetrain;
     PigeonIMU gyro;
@@ -67,7 +67,7 @@ public class AutoBalance extends CommandBase {
     private void moveForward() {
         System.out.println("Pitch at " + gyro.getPitch());
         if (Math.abs(gyro.getPitch() - startingPitch) < 5) {
-            m_drivetrain.tankDrive(-0.2, -0.2);
+            m_drivetrain.tankDrive(-0.5, -0.5);
         } else {
             m_balanceState = BalanceState.MOVE_UP;
         }
