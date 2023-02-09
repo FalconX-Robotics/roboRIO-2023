@@ -14,7 +14,7 @@ public class AutoBalance extends CommandBase {
         BALANCE
     }
 
-    public State state = State.MOVE_FORWARD;
+    public State m_balanceState = State.MOVE_FORWARD;
 
     Drivetrain m_drivetrain;
     PigeonIMU gyro;
@@ -69,7 +69,7 @@ public class AutoBalance extends CommandBase {
         if (Math.abs(gyro.getPitch() - startingPitch) < 5) {
             m_drivetrain.tankDrive(-0.2, -0.2);
         } else {
-            m_balanceState = BalanceState.MOVE_UP;
+            m_balanceState = State.MOVE_UP;
         }
     }
 
@@ -77,7 +77,7 @@ public class AutoBalance extends CommandBase {
         if (Math.abs(gyro.getPitch() - startingPitch) > 5) {
             m_drivetrain.tankDrive(-0.3, -0.3);
         } else {
-            m_balanceState = BalanceState.BALANCE;
+            m_balanceState = State.BALANCE;
         }
     }
 
