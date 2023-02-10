@@ -75,7 +75,7 @@ public class Drivetrain extends SubsystemBase{
 
     // Odometry supposedly tracks the position over time?
     private DifferentialDriveOdometry m_odometry;
-
+    /** Logging for all our data to fix ododododo auto */
     DataLog m_log = DataLogManager.getLog();
     DoubleLogEntry m_leftPositionMetersLog = new DoubleLogEntry(m_log, "/drivetrain/leftPostionMeters");
     DoubleLogEntry m_rightPositionMetersLog = new DoubleLogEntry(m_log, "/drivetrain/rightPostionMeters");
@@ -83,6 +83,8 @@ public class Drivetrain extends SubsystemBase{
     DoubleLogEntry m_leftVelocityLog = new DoubleLogEntry(m_log, "/drivetrain/leftVelocityMetersPerSecond");
     DoubleLogEntry m_rightVelocityLog = new DoubleLogEntry(m_log, "/drivetrain/rightVelocityMetersPerSecond");
     DoubleArrayLogEntry m_poseLog = new DoubleArrayLogEntry(m_log, "/drivetrain/pose");
+    DoubleLogEntry m_rightMotorPercentOutputLog = new DoubleLogEntry(m_log, "/drivetrain/rightMotorPercentOutput");
+    DoubleLogEntry m_leftMotorPercentOutputLog = new DoubleLogEntry(m_log, "/drivetrain/leftMotorPercentOutput");
     
     public Drivetrain () {
         m_leftFrontMotor.setInverted(true);
@@ -128,6 +130,8 @@ public class Drivetrain extends SubsystemBase{
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
+        m_rightMotorPercentOutputLog.append(m_rightMotorGroup.get());
+        m_leftMotorPercentOutputLog.append(m_leftMotorGroup.get());
         m_odometry.update(m_gyro.getRotation2d(), getLeftPositionMeters(), getRightPositionMeters());
         SmartDashboard.putNumber("leftEncoderPositionMeters", getLeftPositionMeters());
         m_leftPositionMetersLog.append(getLeftPositionMeters());
@@ -146,10 +150,10 @@ public class Drivetrain extends SubsystemBase{
         m_poseLog.append(poseRaw);
     }
     public double getLeftPositionMeters () {
-        return -m_leftEncoder.getPosition();
+        return m_leftEncoder.getPosition();
     }
     public double getRightPositionMeters () {
-        return -m_rightEncoder.getPosition();
+        return m_rightEncoder.getPosition();
     }
     // ODOMETRY CODE BELOW
     // DO NOT TOUCH UNLESS YOU ALREADY KNOW WHAT YOU ARE DOIN
@@ -163,7 +167,7 @@ public class Drivetrain extends SubsystemBase{
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         // supposed to be degrees/sec, not revolution/min
         // encoders are reversed :/
-        return new DifferentialDriveWheelSpeeds(-(m_leftEncoder.getVelocity()), -(m_rightEncoder.getVelocity()));
+        return new DifferentialDriveWheelSpeeds((m_leftEncoder.getVelocity()), (m_rightEncoder.getVelocity()));
     }
     public void resetOdometry(){
         // this isnt what max said to do i dont think but i mean :/
@@ -187,14 +191,14 @@ public class Drivetrain extends SubsystemBase{
     /** Also prob unneccessary */
     public void zeroHeading(){
         m_gyro.reset();
+        m_gyro.setYaw(180);
     }
     public double getTurnRate() {
         return -m_gyro.getRate();
     }
-
+    /**yes */
     public void resetLiterallyAlmostEverythingForAuto() {
         resetEncoders();
-        m_gyro.reset();
         zeroHeading();
         m_odometry = new DifferentialDriveOdometry(
             m_gyro.getRotation2d(),
