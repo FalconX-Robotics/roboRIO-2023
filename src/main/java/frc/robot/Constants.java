@@ -32,7 +32,7 @@ public final class Constants {
   public static final int BACK_RIGHT_MOTOR_PORT = 4;
 
   // Arm Ports
-  public static final int ARM_ROTATION_MOTOR_PORT = 10;
+  public static final int ARM_ROTATION_MOTOR_PORT = 3;
   public static final int ARM_EXTENSION_MOTOR_PORT = 12;
 
   // WHAT IS AN ENCODER??? WHY WHAT HOW WHEN AAAAAA
@@ -44,8 +44,8 @@ public final class Constants {
   public static final boolean LeftEncoderReversed = true;
   public static final boolean RightEncoderReversed = false;
 
-  public static final int XBOX_CONTROLLER_PORT = 0;
-  public static final int XBOX_CONTROLLER_PORT2 = 1;
+  public static final int XBOX_CONTROLLER_PORT = 1;
+  public static final int XBOX_CONTROLLER_PORT2 = 0;
   
   public static final int PIGEON_PORT = 42;
   public static final int LED_PORT = 10;
