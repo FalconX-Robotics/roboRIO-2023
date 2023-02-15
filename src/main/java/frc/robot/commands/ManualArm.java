@@ -23,10 +23,12 @@ public class ManualArm extends CommandBase {
 
     @Override
     public void initialize() {
+        
+System.out.println("Initializing Manual Arm R:" + m_rotationSpeed + ", E: " + m_extensionSpeed);
     }
 
     @Override
     public void end(boolean interrupted) {
-        
+        m_arm.manualMoveArm(0, 0);
     }
 }

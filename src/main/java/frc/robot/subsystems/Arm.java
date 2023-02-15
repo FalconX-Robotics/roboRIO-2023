@@ -75,7 +75,7 @@ public class Arm extends SubsystemBase {
 
     //moves the rotation to the target angle with 5 degrees of leniancy
     if (getRotationArmPosition() > m_targetAngle + 5 ) {
-      m_rotationArm.set(-0.5);
+      m_rotationArm.set(-0.05);
     } else if (getRotationArmPosition() < m_targetAngle - 5) {
       m_rotationArm.set(0.5);
     } else {
@@ -85,9 +85,9 @@ public class Arm extends SubsystemBase {
     //moves the extender to the target length with 1 inches of leniancy
 
     if (getExtensionArmPosition() > m_targetExtension + 1 ) {
-      m_extendArm.set(-0.5);
+      m_extendArm.set(-0.05);
     } else if (getExtensionArmPosition() < m_targetExtension - 1) {
-      m_extendArm.set(0.5);
+      m_extendArm.set(0.05);
     } else {
       m_rotationArm.set(0); 
       armExtensionCheck = true;
@@ -104,13 +104,13 @@ public class Arm extends SubsystemBase {
   }
 
   public void manualMoveArm(double rotationSpeed, double extensionSpeed) {
-    m_rotationArm.set(rotationSpeed * 0.1);
-    m_extendArm.set(extensionSpeed * 0.1);
+    m_rotationArm.set(rotationSpeed * 0.2);
+    m_extendArm.set(extensionSpeed * 0.2);
   }
 
   @Override
   public void periodic() {
-    moveToPosition(m_targetAngle, m_targetExtension);
+    // moveToPosition(m_targetAngle, m_targetExtension);
     // This method will be called once per scheduler run
   }
 

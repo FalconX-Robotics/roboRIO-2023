@@ -77,7 +77,7 @@ public class RobotContainer {
     
     // Main states for arm
     Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
-    aButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
+    //aButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
 
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
     bButton.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
@@ -86,7 +86,7 @@ public class RobotContainer {
     xButton.onTrue(new MoveArm(m_arm, MoveArm.State.MID_ARM));
   
     Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kY.value);
-    yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));  
+    //yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));  
 
     POVButton dPadUp = new POVButton(m_xboxController, 0);
     POVButton dPadUpRight = new POVButton(m_xboxController, 45);
@@ -97,21 +97,21 @@ public class RobotContainer {
     POVButton dPadLeft = new POVButton(m_xboxController, 270);
     POVButton dPadUpLeft = new POVButton(m_xboxController, 315);
 
-    dPadUp.onTrue(new ManualArm(1, 0, m_arm));
-    dPadUp.onTrue(new ManualArm(1, 1, m_arm));
-    dPadUp.onTrue(new ManualArm(0, 1, m_arm));
-    dPadUp.onTrue(new ManualArm( -1, 1, m_arm));
-    dPadUp.onTrue(new ManualArm(-1, 0, m_arm));
-    dPadUp.onTrue(new ManualArm(-1, -1, m_arm));
-    dPadUp.onTrue(new ManualArm(0, -1, m_arm));
-    dPadUp.onTrue(new ManualArm(1, -1, m_arm));
+    yButton.whileTrue(new ManualArm(1, 0, m_arm));
+    //dPadUp.onTrue(new ManualArm(1, 1, m_arm));
+    //dPadUp.onTrue(new ManualArm(0, 1, m_arm));
+    //dPadUp.onTrue(new ManualArm( -1, 1, m_arm));
+    aButton.whileTrue(new ManualArm(-1, 0, m_arm));
+    //dPadUp.onTrue(new ManualArm(-1, -1, m_arm));
+    //dPadUp.onTrue(new ManualArm(0, -1, m_arm));
+    //dPadUp.onTrue(new ManualArm(1, -1, m_arm));
 
 
-    Trigger rTrigger = new Trigger(() -> {
-      return m_xboxController.getRightTriggerAxis() > 0.3;
-    });
+    // Trigger rTrigger = new Trigger(() -> {
+    //   return m_xboxController.getRightTriggerAxis() > 0.3;
+    // });
     
-    rTrigger.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
+    // rTrigger.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
   
   }
 
