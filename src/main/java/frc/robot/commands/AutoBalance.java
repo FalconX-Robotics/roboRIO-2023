@@ -8,19 +8,19 @@ import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalance extends CommandBase {
 
-    public static enum BalanceState {
+    public static enum State {
         MOVE_FORWARD,
         MOVE_UP,
         BALANCE
     }
 
-    public BalanceState m_balanceState = BalanceState.MOVE_FORWARD;
+    public State m_balanceState = State.MOVE_FORWARD;
 
     Drivetrain m_drivetrain;
     PigeonIMU gyro;
     boolean balanced = false;
     double startingPitch;
-
+    int counter = 0;
     
 
     public AutoBalance(Drivetrain drivetrain) {
@@ -58,30 +58,49 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (balanced) {
-            return balanced;
-        }
-        return false;
+        return balanced;
+
     }
 
     private void moveForward() {
         System.out.println("Pitch at " + gyro.getPitch());
-        if (Math.abs(gyro.getPitch() - startingPitch) < 5) {
-            m_drivetrain.tankDrive(-0.5, -0.5);
+        if (Math.abs(gyro.getPitch() - startingPitch) < 7) {
+            m_drivetrain.tankDrive(-0.25, -0.25);
         } else {
             m_balanceState = State.MOVE_UP;
         }
     }
 
     private void moveUp() {
-        if (Math.abs(gyro.getPitch() - startingPitch) > 5) {
-            m_drivetrain.tankDrive(-0.3, -0.3);
+        if (Math.abs(gyro.getPitch() - startingPitch) > 6) {
+            m_drivetrain.tankDrive(-0.2, -0.2);
         } else {
             m_balanceState = State.BALANCE;
         }
     }
 
     private void balance() {
-        balanced = true;
+        // if(counter < 50) {
+            if (gyro.getYaw() > 3) {
+                System.out.println("going backwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
+                m_drivetrain.tankDrive(0.01 * gyro.getYaw(), 0.01 * gyro.getYaw());
+
+            } else if (gyro.getYaw() < -3) {
+                System.out.println("going forwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
+                m_drivetrain.tankDrive(-0.01 * gyro.getYaw(), -0.01  * gyro.getYaw());
+
+            } else if (gyro.getYaw() > -3 && gyro.getYaw() < 3) {
+                System.out.println("stopped, counter at "  + counter + " gyro at "+ gyro.getYaw());
+                m_drivetrain.tankDrive(0, 0);
+
+            } 
+        // } else {
+        //     m_drivetrain.tankDrive(0, 0);
+        // }
+
+        counter++;
+        if (counter > 150 ) {
+            balanced = true;
+        }
     }
 }
