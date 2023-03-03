@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.TimedDriveForward;
 import frc.robot.commands.Autos;
+import frc.robot.commands.ClawCommand;
 import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.SlowModeCommand;
@@ -15,6 +16,7 @@ import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Pneumatics;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +38,7 @@ public class RobotContainer {
   private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
   private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
+  Pneumatics pneumatics = new Pneumatics();
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
   // The robot's subsystems and commands are defined here...
@@ -71,6 +74,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
     aButton.whileTrue(new SlowModeCommand());
+    Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
+    bButton.onTrue(new ClawCommand(pneumatics, m_xboxController));
   }
 
   /**
