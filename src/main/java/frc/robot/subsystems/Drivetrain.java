@@ -28,6 +28,8 @@ public class Drivetrain extends SubsystemBase{
     private final CANSparkMax m_rightFrontMotor = new CANSparkMax(Constants.FRONT_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
+    
+    public boolean slowModeOn;
 
     PIDController pidController = new PIDController(92.2, 0, 7.3);
     // What is encoder
@@ -85,14 +87,20 @@ public class Drivetrain extends SubsystemBase{
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
-        m_leftMotorGroup.set(leftPercentOutput);
-        m_rightMotorGroup.set(rightPercentOutput);
+        m_leftMotorGroup.set(slowModeOn ? leftPercentOutput : leftPercentOutput / 3);
+        m_rightMotorGroup.set(slowModeOn ? rightPercentOutput : rightPercentOutput / 3);
         System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
     public void arcadeDrive (double fowardPercentOutput, double turnPercent) {
-        m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
+        if (slowModeOn) {
+            m_drivetrain.arcadeDrive(fowardPercentOutput / 3, turnPercent / 2);
+        } else {
+            m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
+
+        }
+
     }
 
     public void curvatureDrive (double leftPercentY, double rightPercentY) {

@@ -6,13 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
-// import frc.robot.commands.AutoBalance;
 import frc.robot.commands.TimedDriveForward;
-import frc.robot.commands.Autos;
-import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualArm;
 import frc.robot.commands.MoveArm;
+import frc.robot.commands.SlowModeCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.subsystems.Arm;
@@ -55,7 +53,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    
+    configureButtonBindings();
   }
 
   /**
@@ -116,6 +114,8 @@ public class RobotContainer {
     
     rTrigger.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
 
+    Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
+    aButton.whileTrue(new SlowModeCommand());
   }
 
   /**
@@ -126,6 +126,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
+    // return new AutoBalance(0, m_drivetrain);
     return new TimedDriveForward(m_drivetrain);
   }
 }
