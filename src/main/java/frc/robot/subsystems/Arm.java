@@ -38,12 +38,11 @@ public class Arm extends SubsystemBase {
   private double m_targetAngle = 0;
   private double m_targetExtension = 0;
   private boolean m_isNewTarget = false;
-  private ArmState m_currentArmState = ArmState.READY;
 
   // Placeholders on gear ratio and radius; Change later
-  private double armExtensionGearRatio = 5.0/1.0;
+  private double armExtensionGearRatio = 72. / 11.;
   private double armExtensionGearRadius = 0.477; //in inches
-  private double armRotationGearRatio = 200.0/1.0;
+  private double armRotationGearRatio = 5.0 / 1.0 * 52. / 18. * 58. / 18. * 64. / 15.;
 
   private boolean shouldMove = true;
   private boolean currentlyMoving = false;
