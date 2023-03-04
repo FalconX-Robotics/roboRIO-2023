@@ -32,6 +32,8 @@ public class Drivetrain extends SubsystemBase{
     public static boolean slowModeOn;
 
     PIDController pidController = new PIDController(92.2, 0, 7.3);
+
+    
     // What is encoder
     // Depracated for now
     // private final Encoder m_leftEncoder = new Encoder(
@@ -65,6 +67,11 @@ public class Drivetrain extends SubsystemBase{
         m_leftBackMotor.setInverted(true);
         m_rightFrontMotor.setInverted(false);
         m_rightBackMotor.setInverted(false);
+
+        m_leftFrontMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        m_rightFrontMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        m_leftBackMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        m_rightBackMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         // do we even have encoders?
         m_leftEncoder.setPositionConversionFactor(0.4788);
