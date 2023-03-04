@@ -26,14 +26,14 @@ public final class Constants {
     public static final int kArmControllerPort = 1;
   }
   // Drivetrain Ports
-  public static final int FRONT_LEFT_MOTOR_PORT = 2;
-  public static final int BACK_LEFT_MOTOR_PORT = 7;
-  public static final int FRONT_RIGHT_MOTOR_PORT = 1;
-  public static final int BACK_RIGHT_MOTOR_PORT = 4;
+  public static final int FRONT_LEFT_MOTOR_PORT = 7;
+  public static final int BACK_LEFT_MOTOR_PORT = 9;
+  public static final int FRONT_RIGHT_MOTOR_PORT = 3;
+  public static final int BACK_RIGHT_MOTOR_PORT = 5;
 
   // Arm Ports
-  public static final int ARM_ROTATION_MOTOR_PORT = 3;
-  public static final int ARM_EXTENSION_MOTOR_PORT = 12;
+  public static final int ARM_ROTATION_MOTOR_PORT = 8;
+  public static final int ARM_EXTENSION_MOTOR_PORT = 6;
 
   // WHAT IS AN ENCODER??? WHY WHAT HOW WHEN AAAAAA
   // temporary values

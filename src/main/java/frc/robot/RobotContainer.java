@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 
   private final XboxController m_xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
+  private final XboxController m_XboxController2 = new XboxController(Constants.XBOX_CONTROLLER_PORT2);
   // private final Camera m_camera = new Camera();
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Arm m_arm = new Arm();
@@ -94,17 +95,10 @@ public class RobotContainer {
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
     bButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
 
-
-    Trigger rTrigger = new Trigger(() -> {
-      return m_xboxController.getRightTriggerAxis() > 0.3;
-    });
-    
-    rTrigger.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
-
-    // Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
-    // aButton.whileTrue(new SlowModeCommand());
-    // Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
-    // bButton.onTrue(new ClawCommand(pneumatics, m_xboxController));
+    Trigger aButton2 = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
+    aButton2.whileTrue(new SlowModeCommand());
+    Trigger rightBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
+    rightBumper.onTrue(new ClawCommand(pneumatics, m_xboxController));
   }
 
   /**

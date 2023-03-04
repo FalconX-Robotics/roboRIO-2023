@@ -114,11 +114,11 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!currentlyMoving) {
+    /*if (!currentlyMoving) {
       if (Math.abs(m_rotationArm.getEncoder().getVelocity()) > 2) {
         m_rotationArm.set(-0.01 * m_rotationArm.getEncoder().getVelocity());
       }
-    }
+    }*/
     // This method will be called once per scheduler run
   }
 
