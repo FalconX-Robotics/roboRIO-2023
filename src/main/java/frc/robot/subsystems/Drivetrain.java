@@ -29,7 +29,7 @@ public class Drivetrain extends SubsystemBase{
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
     
-    public static boolean slowModeOn;
+    public boolean slowModeOn;
 
     PIDController pidController = new PIDController(92.2, 0, 7.3);
     // What is encoder
@@ -133,6 +133,6 @@ public class Drivetrain extends SubsystemBase{
  * No ones ever going to see this so im putting this down here
  * PID
  *  P - 92.2
- *  I- ???
+ *  I- P / D - 12.6
  *  D - 7.3
  */

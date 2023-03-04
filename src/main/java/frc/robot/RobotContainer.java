@@ -11,17 +11,22 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ClawCommand;
 import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ManualArm;
+import frc.robot.commands.MoveArm;
 import frc.robot.commands.SlowModeCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Pneumatics;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -35,6 +40,7 @@ public class RobotContainer {
   private final XboxController m_xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
   // private final Camera m_camera = new Camera();
   private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Arm m_arm = new Arm();
   private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
   private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
@@ -42,8 +48,6 @@ public class RobotContainer {
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-      // Dont delete this code or it breakes  ⬆
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   //private final CommandXboxController m_driverController =
@@ -68,10 +72,53 @@ public class RobotContainer {
    */
    
   private void configureBindings() {
+    configureButtonBindings();
     m_drivetrain.setDefaultCommand(arcadeDrive);
   }
 
   private void configureButtonBindings() {
+    
+    // Main states for arm
+    Trigger rBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
+    rBumper.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
+
+    Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
+    aButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
+
+    Trigger xButton = new JoystickButton(m_xboxController, XboxController.Button.kX.value);
+    xButton.onTrue(new MoveArm(m_arm, MoveArm.State.MID_ARM));
+
+    Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kX.value);
+    yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HIGH_ARM));  
+    
+    Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
+    bButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
+
+    POVButton dPadUp = new POVButton(m_xboxController, 0);
+    POVButton dPadUpRight = new POVButton(m_xboxController, 45);
+    POVButton dPadRight = new POVButton(m_xboxController, 90);
+    POVButton dPadDownRight = new POVButton(m_xboxController, 135);
+    POVButton dPadDown = new POVButton(m_xboxController, 180);
+    POVButton dPadDownLeft = new POVButton(m_xboxController, 225);
+    POVButton dPadLeft = new POVButton(m_xboxController, 270);
+    POVButton dPadUpLeft = new POVButton(m_xboxController, 315);
+
+    dPadUp.onTrue(new ManualArm(1, 0, m_arm));
+    dPadUpRight.onTrue(new ManualArm(1, 1, m_arm));
+    dPadRight.onTrue(new ManualArm(0, 1, m_arm));
+    dPadDownRight.onTrue(new ManualArm( -1, 1, m_arm));
+    dPadDown.onTrue(new ManualArm(-1, 0, m_arm));
+    dPadDownLeft.onTrue(new ManualArm(-1, -1, m_arm));
+    dPadLeft.onTrue(new ManualArm(0, -1, m_arm));
+    dPadUpLeft.onTrue(new ManualArm(1, -1, m_arm));
+
+
+    Trigger rTrigger = new Trigger(() -> {
+      return m_xboxController.getRightTriggerAxis() > 0.3;
+    });
+    
+    rTrigger.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
+
     Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
     aButton.whileTrue(new SlowModeCommand());
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
