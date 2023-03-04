@@ -122,50 +122,11 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  // Enum states for arm
-  private enum ArmState {
-    READY,
-    ROTATE_WAITING,
-    ROTATING
-  }
-
   private void resetExtenderEncoder() {
     m_extendArm.getEncoder().setPosition(0);
   }
   private void resetExtenderEncoder(double position) {
     m_extendArm.getEncoder().setPosition(position);
   }
-  /**
-   * <h4>currently unused</h4>
-   * Changes the current arm state to update its value
-   * <p>ROTATE WAITING is when the arm has a new target but cannot move for some reason.
-   * <p>ROTATING is when the arm is currently moving.
-   * <p>READY is when the arm is in position and has no new target.
-   */
-  private void UpdateArmState() {
-    switch (m_currentArmState) {
-      case READY: 
-        m_currentArmState = ArmState.ROTATE_WAITING;
-        break;
-      case ROTATE_WAITING: 
-        m_currentArmState = ArmState.ROTATING;
-        break;
-      default:
-        if (m_isNewTarget) {
-          m_currentArmState = ArmState.ROTATE_WAITING;
-        }
-        else if (inPosition()) {
-          m_currentArmState = ArmState.READY;
-        }
-        break;
-    }
-  }
-
-  private boolean inPosition() {
-    return false;
-  }
-
-  private boolean isExtenderSafeForArm() {
-    return !(m_targetAngle < 0.2);
-  }
+  
 }
