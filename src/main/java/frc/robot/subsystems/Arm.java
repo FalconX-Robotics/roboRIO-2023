@@ -77,6 +77,11 @@ public class Arm extends SubsystemBase {
     boolean armRotationCheck = false;
     boolean armExtensionCheck = false;
 
+    // Retracts the arm to the furthest inward state
+    if (getExtensionArmPosition() > 1) {
+      m_extendArm.set(-0.5);
+    }
+    
     //moves the rotation to the target angle with 5 degrees of leniancy
     if (getRotationArmPosition() > m_targetAngle + 5 ) {
       m_rotationArm.set(-0.5);
@@ -94,7 +99,7 @@ public class Arm extends SubsystemBase {
     } else if (getExtensionArmPosition() < m_targetExtension - 1) {
       m_extendArm.set(0.5);
     } else {
-      m_rotationArm.set(0); 
+      m_extendArm.set(0); 
       armExtensionCheck = true;
     }
 

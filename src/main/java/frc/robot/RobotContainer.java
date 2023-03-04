@@ -76,17 +76,20 @@ public class RobotContainer {
   private void configureButtonBindings() {
     
     // Main states for arm
+    Trigger rBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
+    rBumper.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
+
     Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
     aButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
 
-    Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
-    bButton.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
-
     Trigger xButton = new JoystickButton(m_xboxController, XboxController.Button.kX.value);
     xButton.onTrue(new MoveArm(m_arm, MoveArm.State.MID_ARM));
-  
-    Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kY.value);
-    yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));  
+
+    Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kX.value);
+    yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HIGH_ARM));  
+    
+    Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
+    bButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
 
     POVButton dPadUp = new POVButton(m_xboxController, 0);
     POVButton dPadUpRight = new POVButton(m_xboxController, 45);
@@ -98,13 +101,13 @@ public class RobotContainer {
     POVButton dPadUpLeft = new POVButton(m_xboxController, 315);
 
     dPadUp.onTrue(new ManualArm(1, 0, m_arm));
-    dPadUp.onTrue(new ManualArm(1, 1, m_arm));
-    dPadUp.onTrue(new ManualArm(0, 1, m_arm));
-    dPadUp.onTrue(new ManualArm( -1, 1, m_arm));
-    dPadUp.onTrue(new ManualArm(-1, 0, m_arm));
-    dPadUp.onTrue(new ManualArm(-1, -1, m_arm));
-    dPadUp.onTrue(new ManualArm(0, -1, m_arm));
-    dPadUp.onTrue(new ManualArm(1, -1, m_arm));
+    dPadUpRight.onTrue(new ManualArm(1, 1, m_arm));
+    dPadRight.onTrue(new ManualArm(0, 1, m_arm));
+    dPadDownRight.onTrue(new ManualArm( -1, 1, m_arm));
+    dPadDown.onTrue(new ManualArm(-1, 0, m_arm));
+    dPadDownLeft.onTrue(new ManualArm(-1, -1, m_arm));
+    dPadLeft.onTrue(new ManualArm(0, -1, m_arm));
+    dPadUpLeft.onTrue(new ManualArm(1, -1, m_arm));
 
 
     Trigger rTrigger = new Trigger(() -> {
@@ -112,7 +115,7 @@ public class RobotContainer {
     });
     
     rTrigger.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
-  
+
   }
 
   /**
