@@ -94,24 +94,6 @@ public class RobotContainer {
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
     bButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
 
-    POVButton dPadUp = new POVButton(m_xboxController, 0);
-    POVButton dPadUpRight = new POVButton(m_xboxController, 45);
-    POVButton dPadRight = new POVButton(m_xboxController, 90);
-    POVButton dPadDownRight = new POVButton(m_xboxController, 135);
-    POVButton dPadDown = new POVButton(m_xboxController, 180);
-    POVButton dPadDownLeft = new POVButton(m_xboxController, 225);
-    POVButton dPadLeft = new POVButton(m_xboxController, 270);
-    POVButton dPadUpLeft = new POVButton(m_xboxController, 315);
-
-    dPadUp.onTrue(new ManualArm(1, 0, m_arm));
-    dPadUpRight.onTrue(new ManualArm(1, 1, m_arm));
-    dPadRight.onTrue(new ManualArm(0, 1, m_arm));
-    dPadDownRight.onTrue(new ManualArm( -1, 1, m_arm));
-    dPadDown.onTrue(new ManualArm(-1, 0, m_arm));
-    dPadDownLeft.onTrue(new ManualArm(-1, -1, m_arm));
-    dPadLeft.onTrue(new ManualArm(0, -1, m_arm));
-    dPadUpLeft.onTrue(new ManualArm(1, -1, m_arm));
-
 
     Trigger rTrigger = new Trigger(() -> {
       return m_xboxController.getRightTriggerAxis() > 0.3;
@@ -119,10 +101,10 @@ public class RobotContainer {
     
     rTrigger.whileTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE));
 
-    Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
-    aButton.whileTrue(new SlowModeCommand());
-    Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
-    bButton.onTrue(new ClawCommand(pneumatics, m_xboxController));
+    // Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
+    // aButton.whileTrue(new SlowModeCommand());
+    // Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
+    // bButton.onTrue(new ClawCommand(pneumatics, m_xboxController));
   }
 
   /**
