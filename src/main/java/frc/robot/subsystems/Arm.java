@@ -54,6 +54,9 @@ public class Arm extends SubsystemBase {
     m_rotationArm.setInverted(false);
     m_extendArm.setInverted(false);
 
+    m_rotationArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m_extendArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
   }
 
   public double getRotationArmPosition() {
@@ -76,11 +79,6 @@ public class Arm extends SubsystemBase {
     m_isNewTarget = true;
     boolean armRotationCheck = false;
     boolean armExtensionCheck = false;
-
-    // Retracts the arm to the furthest inward state
-    if (getExtensionArmPosition() > 1) {
-      m_extendArm.set(-0.5);
-    }
     
     //moves the rotation to the target angle with 5 degrees of leniancy
     if (getRotationArmPosition() > m_targetAngle + 5 ) {
@@ -103,12 +101,7 @@ public class Arm extends SubsystemBase {
       armExtensionCheck = true;
     }
 
-    if (armRotationCheck && armExtensionCheck) {
-      return true;
-    }
-
-
-    return false;
+    return armRotationCheck && armExtensionCheck;
 
     // this is really terrible -- logan
   }
@@ -121,8 +114,6 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    moveToPosition(m_targetAngle, m_targetExtension);
-
     if (!currentlyMoving) {
       if (Math.abs(m_rotationArm.getEncoder().getVelocity()) > 2) {
         m_rotationArm.set(-0.01 * m_rotationArm.getEncoder().getVelocity());
@@ -167,8 +158,7 @@ public class Arm extends SubsystemBase {
           m_currentArmState = ArmState.READY;
         }
         break;
-    }// BEIJING EMBASSY was here
-
+    }
   }
 
   private boolean inPosition() {

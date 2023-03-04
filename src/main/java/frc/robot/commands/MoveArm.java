@@ -87,51 +87,75 @@ public class MoveArm extends CommandBase {
   }
 
   // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+
+  private static enum CurrentStep{
+    RETRACTING,
+    ROTATING,
+    EXTENDING,
+    FINISHED
+    }
+
+  CurrentStep m_armStep = CurrentStep.RETRACTING;
+
+  private void moveByStep(double targetAngle, double extension){
+    //if (<state 1>) moveToPostion(currentAngle, 0)
+    //else if (<state 2>) moveToPostion(angle, 0)
+    // else (state 3) moveToPostion(angle, extension)
+    if(m_armStep == CurrentStep.RETRACTING){
+      if (m_arm.moveToPosition(m_arm.getRotationArmPosition(), 0)){
+        m_armStep = CurrentStep.ROTATING;
+      }
+    }else if(m_armStep == CurrentStep.ROTATING){
+      if (m_arm.moveToPosition(targetAngle, 0)){
+        m_armStep = CurrentStep.EXTENDING;
+      }
+    }else{
+      if(m_arm.moveToPosition(targetAngle, extension)){
+        m_armStep = CurrentStep.FINISHED;
+      }
+    }
   }
 
   // The different states for the arm
   // These values are not correct; need to change
+  // The arm can extend a maximum of 17 inches
+  // At maximum extension, arm is just below 28 inches in length
   private void retractedState() {
     System.out.println("Moving to retracted state");
-    if (m_arm.moveToPosition(10, 2)) {
-      end(false); 
-    }
+    moveByStep(10, 0);
   }
 
   private void groundArmState() {
     System.out.println("Moving to ground arm state");
-    if (m_arm.moveToPosition(45, 12)) {
-      end(false);
-    }
+    moveByStep(45, 12);
   }
   
   private void midArmState() {
     System.out.println("Moving to mid arm state");
-    if (m_arm.moveToPosition(90, 12)) {
-      end(false);
-    }
+    moveByStep(90, 12);
   }
 
   private void highArmState() {
     System.out.println("Moving to high arm state");
-    if (m_arm.moveToPosition(130, 12)) {
-      end(false);
-    }
+    moveByStep(130, 12);
+   
+
   }
 
   private void humanIntakeState() {
     System.out.println("Moving to human intake state");
-    if (m_arm.moveToPosition(115, 12)) {
-      end(false);
+    moveByStep(115,12);
+  
     }
-  }
 
   private void movingState() {
     System.out.println("Moving to moveing state? idk");
 
     // whats this do????????
+  }
+
+  @Override
+  public boolean isFinished() {
+    return m_armStep == CurrentStep.FINISHED;
   }
 }
