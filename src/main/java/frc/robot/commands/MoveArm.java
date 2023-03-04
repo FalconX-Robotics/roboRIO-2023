@@ -109,7 +109,7 @@ public class MoveArm extends CommandBase {
       if (m_arm.moveToPosition(targetAngle, 0)){
         m_armStep = CurrentStep.EXTENDING;
       }
-    }else{
+    }else if (m_armStep == CurrentStep.EXTENDING) {
       if(m_arm.moveToPosition(targetAngle, extension)){
         m_armStep = CurrentStep.FINISHED;
       }

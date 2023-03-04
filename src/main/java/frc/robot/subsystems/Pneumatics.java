@@ -10,7 +10,7 @@ public class Pneumatics extends SubsystemBase {
 
     private final Joystick m_stick = new Joystick(0);
     
-    private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 15, 1);
+    private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 0, 1);
     public void open() {
         m_doubleSolenoid.set(Value.kForward);
     }

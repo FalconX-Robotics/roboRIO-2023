@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,9 +40,11 @@ public class Arm extends SubsystemBase {
   private double m_targetExtension = 0;
   private boolean m_isNewTarget = false;
 
+  private SlewRateLimiter m_extendRateLimiter = new SlewRateLimiter(1);
+  private SlewRateLimiter m_rotationRateLimiter = new SlewRateLimiter(1.5);
   // Placeholders on gear ratio and radius; Change later
   private double armExtensionGearRatio = 72. / 11.;
-  private double armExtensionGearRadius = 0.477; //in inches
+  private double armExtensionGearRadius = 0.716; //in inches
   private double armRotationGearRatio = 5.0 / 1.0 * 52. / 18. * 58. / 18. * 64. / 15.;
 
   private boolean shouldMove = true;
@@ -63,7 +66,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getExtensionArmPosition() {
-    return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius * armExtensionGearRatio * 2 * Math.PI;
+    return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius * armExtensionGearRatio * 2. * Math.PI;
   }
 
   // Moves arm to position using angle and extend (also stops it when needs to)
@@ -106,9 +109,9 @@ public class Arm extends SubsystemBase {
   }
 
   public void manualMoveArm(double rotationSpeed, double extensionSpeed) {
-    currentlyMoving = rotationSpeed != 0;
-    m_rotationArm.set(rotationSpeed * 0.1);
-    m_extendArm.set(extensionSpeed * 0.1);
+    // currentlyMoving = rotationSpeed != 0;
+    m_rotationArm.set(m_rotationRateLimiter.calculate(rotationSpeed));
+    m_extendArm.set(m_extendRateLimiter.calculate(extensionSpeed) * 0.2);
   }
 
   @Override

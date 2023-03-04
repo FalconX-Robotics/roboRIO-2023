@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.TimedDriveForward;
 import frc.robot.commands.Autos;
@@ -42,6 +41,7 @@ public class RobotContainer {
   // private final Camera m_camera = new Camera();
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Arm m_arm = new Arm();
+  private final ManualArm m_manualArm = new ManualArm(m_XboxController2, m_arm);
   private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
   private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
@@ -75,11 +75,13 @@ public class RobotContainer {
   private void configureBindings() {
     configureButtonBindings();
     m_drivetrain.setDefaultCommand(arcadeDrive);
+    m_arm.setDefaultCommand(m_manualArm);
   }
 
   private void configureButtonBindings() {
     
     // Main states for arm
+    /* 
     Trigger rBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
     rBumper.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
 
@@ -99,6 +101,8 @@ public class RobotContainer {
     aButton2.whileTrue(new SlowModeCommand());
     Trigger rightBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
     rightBumper.onTrue(new ClawCommand(pneumatics, m_xboxController));
+    */
+    
   }
 
   /**
