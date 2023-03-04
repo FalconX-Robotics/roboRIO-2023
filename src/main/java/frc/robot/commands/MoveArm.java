@@ -22,6 +22,7 @@ public class MoveArm extends CommandBase {
     RETRACTED, 
     GROUND_ARM, 
     MID_ARM, 
+    HIGH_ARM,
     HUMAN_INTAKE, 
     MOVING
   };
@@ -71,6 +72,9 @@ public class MoveArm extends CommandBase {
       case HUMAN_INTAKE:
         humanIntakeState();
         break;
+      case HIGH_ARM:
+        highArmState();
+        break;
       case MOVING:
         movingState();
         break;
@@ -89,6 +93,7 @@ public class MoveArm extends CommandBase {
   }
 
   // The different states for the arm
+  // These values are not correct; need to change
   private void retractedState() {
     System.out.println("Moving to retracted state");
     if (m_arm.moveToPosition(10, 2)) {
@@ -106,6 +111,13 @@ public class MoveArm extends CommandBase {
   private void midArmState() {
     System.out.println("Moving to mid arm state");
     if (m_arm.moveToPosition(90, 12)) {
+      end(false);
+    }
+  }
+
+  private void highArmState() {
+    System.out.println("Moving to high arm state");
+    if (m_arm.moveToPosition(130, 12)) {
       end(false);
     }
   }
