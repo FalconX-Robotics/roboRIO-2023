@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,6 +25,9 @@ import frc.robot.commands.ManualArm;
  * - william :)
  * 
  * <h1> <em> false imformation
+ *
+ * <h1> <em> c'est vrai
+ * also you spelled information wrong (skill issue)
  */
 
 public class Arm extends SubsystemBase {
@@ -46,19 +48,20 @@ public class Arm extends SubsystemBase {
   private double armExtensionGearRatio = 72. / 11.;
   private double armExtensionGearRadius = 0.716; //in inches
   private double armRotationGearRatio = 5.0 / 1.0 * 52. / 18. * 58. / 18. * 64. / 15.;
-
+;;
   private boolean shouldMove = true;
   private boolean currentlyMoving = false;
   // public int[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] EightHundredAndFiftyFiveDimensionalIntArray = {1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1};
 
   public Arm() {
-    
     m_rotationArm.setInverted(false);
     m_extendArm.setInverted(false);
 
     m_rotationArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_extendArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+;  m_extendArm.setIdleMode(CANSparkMax.IdleMode.kBrake);;;;;;;;
 
+    resetExtenderEncoder(0);
+    resetRotationEncoder(45);
   }
 
   public double getRotationArmPosition() {
@@ -71,7 +74,10 @@ public class Arm extends SubsystemBase {
 
   // Moves arm to position using angle and extend (also stops it when needs to)
   public boolean moveToPosition(double angle, double extend) {
-    if (Math.abs(angle - m_rotationArm.getEncoder().getPosition()) > 5) {currentlyMoving = true;}
+    if (Math.abs(angle - m_rotationArm.getEncoder().getPosition()) > 5) 
+    {
+      currentlyMoving = true;
+      }
     // For testing, remove when avaliable.
     System.out.println("Changing angle to approximately " + Math.floor(angle) + " degrees");
     System.out.println("Moving extender to approximately " + Math.floor(extend) + " inches");
@@ -84,9 +90,9 @@ public class Arm extends SubsystemBase {
     
     //moves the rotation to the target angle with 5 degrees of leniancy
     if (getRotationArmPosition() > m_targetAngle + 5 ) {
-      m_rotationArm.set(-0.5);
+      m_rotationArm.set(-0.2);
     } else if (getRotationArmPosition() < m_targetAngle - 5) {
-      m_rotationArm.set(0.5);
+      m_rotationArm.set(0.2);
     } else {
       m_rotationArm.set(0);
       armRotationCheck = true;
@@ -95,24 +101,50 @@ public class Arm extends SubsystemBase {
     //moves the extender to the target length with 1 inches of leniancy
 
     if (getExtensionArmPosition() > m_targetExtension + 1 ) {
-      m_extendArm.set(-0.5);
+      m_extendArm.set(-0.2);
     } else if (getExtensionArmPosition() < m_targetExtension - 1) {
-      m_extendArm.set(0.5);
+      m_extendArm.set(0.2);
     } else {
-      m_extendArm.set(0); 
+      m_extendArm.set(0);
       armExtensionCheck = true;
     }
-
-    return armRotationCheck && armExtensionCheck;
+    return (armRotationCheck && armExtensionCheck);
 
     // this is really terrible -- logan
   }
 
+  public void setExtensionMotor(double percentOutput) {
+    m_extendArm.setVoltage(percentOutput * 12. - 0.6 * Math.cos(Math.toRadians(getRotationArmPosition())));;
+  }
+;
+  public void setRotationMotor(double percentOutput) {
+    double extensionPercent = getExtensionArmPosition() / 17.;
+    // inner peaces charge you with excitment
+    double inVolts = .5;
+    double outVolts = 1.;
+    
+    double voltageFactor = inVolts * (1 - extensionPercent) + outVolts * extensionPercent;;
+    m_rotationArm.setVoltage(percentOutput * 12 + voltageFactor * Math.sin(Math.toRadians(getRotationArmPosition())));;
+  }
+
   public void manualMoveArm(double rotationSpeed, double extensionSpeed) {
     // currentlyMoving = rotationSpeed != 0;
-    m_rotationArm.set(m_rotationRateLimiter.calculate(rotationSpeed));
-    m_extendArm.set(m_extendRateLimiter.calculate(extensionSpeed) * 0.2);
+    if (safeExtension() && rotationSpeed > 0) {
+      m_rotationArm.set(m_rotationRateLimiter.calculate(rotationSpeed));
+      setExtensionMotor(m_extendRateLimiter.calculate(extensionSpeed) * 0.2);
+    } else {
+      setExtensionMotor(m_extendRateLimiter.calculate(-1) * 0.4);
+    }
   }
+  
+// Strink cope = "fake";
+// what is a strink -w
+// The past tense of stronk -g
+// oh of course, i just forgot thanks -w
+// why not strunk -t
+// That's the future tense of course -g
+// what about the past particible -w
+// In that case you would use 'strank' -g
 
   @Override
   public void periodic() {
@@ -121,14 +153,30 @@ public class Arm extends SubsystemBase {
         m_rotationArm.set(-0.01 * m_rotationArm.getEncoder().getVelocity());
       }
     }*/
+    // Not correct right now, but main idea
+    if(!safeExtension() && getExtensionArmPosition() > 1){
+      setExtensionMotor(m_extendRateLimiter.calculate(-1) * 0.4);
+    }
     // This method will be called once per scheduler run
   }
 
   private void resetExtenderEncoder() {
-    m_extendArm.getEncoder().setPosition(0);
+    resetExtenderEncoder(0);
   }
+
   private void resetExtenderEncoder(double position) {
-    m_extendArm.getEncoder().setPosition(position);
+    m_extendArm.getEncoder().setPosition(position / armExtensionGearRadius / armExtensionGearRatio / 2. / Math.PI);;
+  }
+
+  private void resetRotationEncoder() {
+    resetRotationEncoder(0);
+  }
+
+  private void resetRotationEncoder(double angle) {
+    m_rotationArm.getEncoder().setPosition(angle / 360. / armRotationGearRatio);;
   }
   
-}
+  private boolean safeExtension() {
+    return m_rotationArm.getEncoder().getPosition() > 260.;
+  }
+}//pollo - thomas

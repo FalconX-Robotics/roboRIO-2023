@@ -30,14 +30,7 @@ public class MoveArm extends CommandBase {
   State state;
   /** <h2> Literally useless, </h2> @return {@code true}
   */
-  private boolean Joke () {
-    boolean value = true;
-    if (value == true) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // private static boolean Joke (boolean value) {if (value != true) {return false;} else {Boolean bool = true;return value = (Boolean.valueOf ((Boolean.parseBoolean(String.valueOf(((value == (value == true) ? (true) : (true || (value == !value)))))))));}}}
 
   public MoveArm(Arm arm, State state) {
     // Use addRequirement() here to declare subsystem dependencies.
@@ -46,6 +39,7 @@ public class MoveArm extends CommandBase {
     addRequirements(arm);
     m_arm = arm;
     this.state = state;
+    //Joke(true);
   }
 
   private void MoveArmToState (State state) {
@@ -98,18 +92,15 @@ public class MoveArm extends CommandBase {
   CurrentStep m_armStep = CurrentStep.RETRACTING;
 
   private void moveByStep(double targetAngle, double extension){
-    //if (<state 1>) moveToPostion(currentAngle, 0)
-    //else if (<state 2>) moveToPostion(angle, 0)
-    // else (state 3) moveToPostion(angle, extension)
-    if(m_armStep == CurrentStep.RETRACTING){
+    if (m_armStep == CurrentStep.RETRACTING){
       if (m_arm.moveToPosition(m_arm.getRotationArmPosition(), 0)){
         m_armStep = CurrentStep.ROTATING;
       }
-    }else if(m_armStep == CurrentStep.ROTATING){
+    } else if (m_armStep == CurrentStep.ROTATING) {
       if (m_arm.moveToPosition(targetAngle, 0)){
         m_armStep = CurrentStep.EXTENDING;
       }
-    }else if (m_armStep == CurrentStep.EXTENDING) {
+    } else if (m_armStep == CurrentStep.EXTENDING) {
       if(m_arm.moveToPosition(targetAngle, extension)){
         m_armStep = CurrentStep.FINISHED;
       }
