@@ -74,7 +74,7 @@ public class RobotContainer {
    
   private void configureBindings() {
     configureButtonBindings();
-    m_drivetrain.setDefaultCommand(arcadeDrive);
+    m_drivetrain.setDefaultCommand(curvatureDrive);
     m_arm.setDefaultCommand(m_manualArm);
   }
 

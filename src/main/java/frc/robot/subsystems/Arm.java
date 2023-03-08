@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.ManualArm;
@@ -51,7 +52,6 @@ public class Arm extends SubsystemBase {
 ;;
   private boolean shouldMove = true;
   private boolean currentlyMoving = false;
-  // public int[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] EightHundredAndFiftyFiveDimensionalIntArray = {1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1};
 
   public Arm() {
     m_rotationArm.setInverted(false);
@@ -60,8 +60,11 @@ public class Arm extends SubsystemBase {
     m_rotationArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
 ;  m_extendArm.setIdleMode(CANSparkMax.IdleMode.kBrake);;;;;;;;
 
-    resetExtenderEncoder(0);
+    resetExtenderEncoder(0.5);
     resetRotationEncoder(45);
+
+    m_rotationArm.setSmartCurrentLimit(40);
+    m_extendArm.setSmartCurrentLimit(40);
   }
 
   public double getRotationArmPosition() {
@@ -114,27 +117,38 @@ public class Arm extends SubsystemBase {
   }
 
   public void setExtensionMotor(double percentOutput) {
-    m_extendArm.setVoltage(percentOutput * 12. - 0.6 * Math.cos(Math.toRadians(getRotationArmPosition())));;
+    double voltage = percentOutput * 12. - 0.6 * Math.cos(Math.toRadians(getRotationArmPosition()));
+    m_extendArm.setVoltage(voltage);
+    SmartDashboard.putNumber("extensionMotor", voltage);
+    
   }
 ;
   public void setRotationMotor(double percentOutput) {
     double extensionPercent = getExtensionArmPosition() / 17.;
     // inner peaces charge you with excitment
-    double inVolts = .5;
-    double outVolts = 1.;
-    
+    double inVolts = .1;
+    double outVolts = .2;
+
     double voltageFactor = inVolts * (1 - extensionPercent) + outVolts * extensionPercent;;
-    m_rotationArm.setVoltage(percentOutput * 12 + voltageFactor * Math.sin(Math.toRadians(getRotationArmPosition())));;
+
+    double voltage = percentOutput * 12 + voltageFactor * Math.sin(Math.toRadians(getRotationArmPosition()));
+    m_rotationArm.setVoltage(voltage);;
+    SmartDashboard.putNumber("rotationMotor", voltage);
   }
 
   public void manualMoveArm(double rotationSpeed, double extensionSpeed) {
     // currentlyMoving = rotationSpeed != 0;
-    if (safeExtension() && rotationSpeed > 0) {
-      m_rotationArm.set(m_rotationRateLimiter.calculate(rotationSpeed));
+    if (safeExtension()) {
+      setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed));
       setExtensionMotor(m_extendRateLimiter.calculate(extensionSpeed) * 0.2);
+    } else if (getExtensionArmPosition() > 1) {
+      setExtensionMotor(m_extendRateLimiter.calculate(Math.min(extensionSpeed, 0)) * 0.2);
+      setRotationMotor(m_rotationRateLimiter.calculate(Math.max(rotationSpeed, 0)));
     } else {
-      setExtensionMotor(m_extendRateLimiter.calculate(-1) * 0.4);
+      setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed));
+      setExtensionMotor(0);
     }
+    
   }
   
 // Strink cope = "fake";
@@ -155,9 +169,17 @@ public class Arm extends SubsystemBase {
     }*/
     // Not correct right now, but main idea
     if(!safeExtension() && getExtensionArmPosition() > 1){
-      setExtensionMotor(m_extendRateLimiter.calculate(-1) * 0.4);
-    }
+      setExtensionMotor(m_extendRateLimiter.calculate(1) * -0.4);
+    } 
+    //System.out.println("extensionMotor " + m_extendArm.get());
+ // System.out.println("rotationMotor " + m_rotationArm.get());
     // This method will be called once per scheduler run
+
+    double extendMotor = getExtensionArmPosition();
+    SmartDashboard.putNumber("extentionPosition", extendMotor);
+
+    double rotateMotor = getRotationArmPosition();
+    SmartDashboard.putNumber("rotationPosition", rotateMotor);
   }
 
   private void resetExtenderEncoder() {
@@ -177,6 +199,6 @@ public class Arm extends SubsystemBase {
   }
   
   private boolean safeExtension() {
-    return m_rotationArm.getEncoder().getPosition() > 260.;
+    return getRotationArmPosition() > 250.;
   }
 }//pollo - thomas

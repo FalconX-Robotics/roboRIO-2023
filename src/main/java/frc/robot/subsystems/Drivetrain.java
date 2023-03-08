@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -57,6 +58,8 @@ public class Drivetrain extends SubsystemBase{
     // Odometry supposedly tracks the position over time?
     private final DifferentialDriveOdometry m_odometry;
     
+    private final SlewRateLimiter m_leftRateLimiter = new SlewRateLimiter(1);
+    private final SlewRateLimiter m_rightRateLimiter = new SlewRateLimiter(1);
     
     public PigeonIMU getGyro() {
         return m_gyro;
@@ -83,6 +86,11 @@ public class Drivetrain extends SubsystemBase{
             m_leftEncoder.getPosition(),
             m_rightEncoder.getPosition()            
         );
+
+        m_leftFrontMotor.setSmartCurrentLimit(60);
+        m_leftBackMotor.setSmartCurrentLimit(60);
+        m_rightFrontMotor.setSmartCurrentLimit(60);
+        m_rightBackMotor.setSmartCurrentLimit(60);
        }
     // Command base -> ab
     // private Command command = new
@@ -94,8 +102,8 @@ public class Drivetrain extends SubsystemBase{
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
-        m_leftMotorGroup.set(slowModeOn ? leftPercentOutput : leftPercentOutput / 3);
-        m_rightMotorGroup.set(slowModeOn ? rightPercentOutput : rightPercentOutput / 3);
+        m_leftMotorGroup.set(m_leftRateLimiter.calculate((slowModeOn ? leftPercentOutput : leftPercentOutput / 3)));
+        m_rightMotorGroup.set(m_rightRateLimiter.calculate((slowModeOn ? rightPercentOutput : rightPercentOutput / 3)));
         System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
     }
     // Define arcadeDrive
@@ -103,15 +111,21 @@ public class Drivetrain extends SubsystemBase{
     public void arcadeDrive (double fowardPercentOutput, double turnPercent) {
         if (slowModeOn) {
             m_drivetrain.arcadeDrive(fowardPercentOutput / 3, turnPercent / 2);
-        } else {
+        } else { 
             m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
-
         }
-
     }
 
+    //polymomomomomomoprhisim
+            //   help it hhurts
+            // :(
+                // aiya
+
     public void curvatureDrive (double leftPercentY, double rightPercentY) {
-        m_drivetrain.curvatureDrive(leftPercentY, rightPercentY, false);
+        m_drivetrain.curvatureDrive(
+            m_leftRateLimiter.calculate(leftPercentY) ,
+            m_rightRateLimiter.calculate(rightPercentY), 
+            false);
     }
 
     public void pidTankDrive(double distance) {
