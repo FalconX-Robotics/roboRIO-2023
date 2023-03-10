@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.XboxController;
 /**
  * <div> Nobody will know, because at the end of the day it is night.
  * <p>The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -16,10 +17,8 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  * <h1> William was here
- * <h2> Logan was too 
+ * <h2> Logan was too
  */
-import edu.wpi.first.wpilibj.XboxController;
-
 public final class Constants {
   
   // Drivetrain Ports
@@ -32,12 +31,6 @@ public final class Constants {
   public static final int ARM_ROTATION_MOTOR_PORT = 8;
   public static final int ARM_EXTENSION_MOTOR_PORT = 6;
 
-  // WHAT IS AN ENCODER??? WHY WHAT HOW WHEN AAAAAA
-  // temporary values
-  // public static final int LeftEncoderPort1 = 6;
-  // public static final int LeftEncoderPort2 = 6;
-  // public static final int RightEncoderPort1 = 6;
-  // public static final int RightEncoderPort2 = 2;
   public static final boolean LeftEncoderReversed = true;
   public static final boolean RightEncoderReversed = false;
 
