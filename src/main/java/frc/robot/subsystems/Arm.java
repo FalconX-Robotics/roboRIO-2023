@@ -8,6 +8,8 @@ import javax.annotation.processing.SupportedOptions;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.XboxController;
@@ -82,6 +84,22 @@ public class Arm extends SubsystemBase {
     return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius / armExtensionGearRatio * 2. * Math.PI;
   }
 
+  public void unsafeMoveToPosition(double rotation, double extension) {
+    if (Math.abs(getRotationArmPosition() - rotation) < 3 && 
+        Math.abs(getExtensionArmPosition() - extension) < 0.25) {
+        stopMotors();
+        return;
+    }
+
+    setExtensionMotor(MathUtil.clamp(extension - getExtensionArmPosition(), -0.5, 0.5) * 0.05);
+    setRotationMotor((rotation - getRotationArmPosition()) * 0.05);
+}
+
+  private void stopMotors() {
+    setExtensionMotor(0);
+    setRotationMotor(0);
+  }
+
   // Moves arm to position using angle and extend (also stops it when needs to)
   public boolean moveToPosition(double angle, double extend) {
     if (Math.abs(angle - m_rotationArm.getEncoder().getPosition()) > 5) 
@@ -148,9 +166,9 @@ public class Arm extends SubsystemBase {
     // currentlyMoving = rotationSpeed != 0;
     if (safeExtension()) {
       setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed));
-      setExtensionMotor(m_extendRateLimiter.calculate(extensionSpeed) * 0.2);
+      setExtensionMotor(m_extendRateLimiter.calculate(extensionSpeed) * 0.33);
     } else if (getExtensionArmPosition() > 0.25) {
-      setExtensionMotor(m_extendRateLimiter.calculate(Math.min(extensionSpeed, 0)) * 0.2);
+      setExtensionMotor(m_extendRateLimiter.calculate(Math.min(extensionSpeed, 0)) * 0.33);
       setRotationMotor(m_rotationRateLimiter.calculate(Math.max(rotationSpeed, 0)));
     } else if (getRotationArmPosition() > 40 || rotationSpeed > 0) {
       setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed));
@@ -173,6 +191,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     /*if (!currentlyMoving) {
       if (Math.abs(m_rotationArm.getEncoder().getVelocity()) > 2) {
         m_rotationArm.set(-0.01 * m_rotationArm.getEncoder().getVelocity());
