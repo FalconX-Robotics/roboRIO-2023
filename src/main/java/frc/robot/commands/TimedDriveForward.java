@@ -47,7 +47,7 @@ public class TimedDriveForward extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Timer.getFPGATimestamp() - startTime >= 3.0) {
+    if (Timer.getFPGATimestamp() - startTime >= 2.0) {
         return true;
     } else {
       return false;
