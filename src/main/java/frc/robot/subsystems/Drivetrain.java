@@ -98,6 +98,7 @@ public class Drivetrain extends SubsystemBase{
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
+        
     }
     // Define tankDrive
         // Both using y
@@ -124,7 +125,7 @@ public class Drivetrain extends SubsystemBase{
     public void curvatureDrive (double leftPercentY, double rightPercentY, boolean turnInPlace) {
         m_drivetrain.curvatureDrive(
             m_leftRateLimiter.calculate(leftPercentY  * (slowModeOn ? 0.33 : 1)),
-            m_rightRateLimiter.calculate(rightPercentY), 
+            m_rightRateLimiter.calculate(rightPercentY * ((slowModeOn && turnInPlace) ? 0.33 : 1)), 
             turnInPlace);
     }
 

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
@@ -31,7 +32,10 @@ public class CurvatureDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivetrain.curvatureDrive(m_xboxController.getLeftY(), m_xboxController.getRightX(), m_xboxController.getLeftBumper());
+    // m_xboxController.setRumble(RumbleType.kBothRumble, 1);
+    //speedForward is front and back motion
+    double speedForward = m_xboxController.getRightY() - m_xboxController.getRightTriggerAxis() + m_xboxController.getLeftTriggerAxis();
+    m_drivetrain.curvatureDrive(speedForward, m_xboxController.getLeftX(), m_xboxController.getLeftBumper());
   }
 
   // Called once the command ends or is interrupted.
