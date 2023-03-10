@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
@@ -30,13 +31,13 @@ public class CurvatureDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivetrain.curvatureDrive(m_xboxController.getRightY(), m_xboxController.getLeftX());
+    m_drivetrain.curvatureDrive(m_xboxController.getLeftY(), m_xboxController.getRightX(), m_xboxController.getLeftBumper());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.curvatureDrive(0, 0);
+    //m_drivetrain.curvatureDrive(0, 0);
   }
 
   // Returns true when the command should end.

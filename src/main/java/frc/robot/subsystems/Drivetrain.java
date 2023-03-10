@@ -102,8 +102,8 @@ public class Drivetrain extends SubsystemBase{
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
-        m_leftMotorGroup.set(m_leftRateLimiter.calculate((slowModeOn ? leftPercentOutput : leftPercentOutput / 3)));
-        m_rightMotorGroup.set(m_rightRateLimiter.calculate((slowModeOn ? rightPercentOutput : rightPercentOutput / 3)));
+        m_leftMotorGroup.set(m_leftRateLimiter.calculate((slowModeOn ? leftPercentOutput / 3 : leftPercentOutput)));
+        m_rightMotorGroup.set(m_rightRateLimiter.calculate((slowModeOn ? rightPercentOutput / 3: rightPercentOutput)));
         System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
     }
     // Define arcadeDrive
@@ -121,11 +121,11 @@ public class Drivetrain extends SubsystemBase{
             // :(
                 // aiya
 
-    public void curvatureDrive (double leftPercentY, double rightPercentY) {
+    public void curvatureDrive (double leftPercentY, double rightPercentY, boolean turnInPlace) {
         m_drivetrain.curvatureDrive(
-            m_leftRateLimiter.calculate(leftPercentY) ,
+            m_leftRateLimiter.calculate(leftPercentY  * (slowModeOn ? 0.33 : 1)),
             m_rightRateLimiter.calculate(rightPercentY), 
-            false);
+            turnInPlace);
     }
 
     public void pidTankDrive(double distance) {
@@ -146,6 +146,13 @@ public class Drivetrain extends SubsystemBase{
     private void useOutput(double output, double setpoint) {
         // TODO Auto-generated method stub
         
+    }
+
+    private void ResetEncoders() {
+        m_leftBackMotor.getEncoder().setPosition(0);
+        m_leftFrontMotor.getEncoder().setPosition(0);
+        m_rightBackMotor.getEncoder().setPosition(0);
+        m_rightFrontMotor.getEncoder().setPosition(0);
     }
 }
 

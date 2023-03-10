@@ -4,14 +4,18 @@
 
 package frc.robot.subsystems;
 
+import javax.annotation.processing.SupportedOptions;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.ManualArm;
+import frc.robot.util.BetterSlewRateLimiter;
 
 /**
  * <strong> Aperature Science </strong>
@@ -43,13 +47,15 @@ public class Arm extends SubsystemBase {
   private double m_targetExtension = 0;
   private boolean m_isNewTarget = false;
 
-  private SlewRateLimiter m_extendRateLimiter = new SlewRateLimiter(1);
-  private SlewRateLimiter m_rotationRateLimiter = new SlewRateLimiter(1.5);
+  private BetterSlewRateLimiter m_extendRateLimiter = new BetterSlewRateLimiter(1.5, 1.5, 0);
+  private BetterSlewRateLimiter m_rotationRateLimiter = new BetterSlewRateLimiter(1.5, 5, 0);
   // Placeholders on gear ratio and radius; Change later
   private double armExtensionGearRatio = 72. / 11.;
   private double armExtensionGearRadius = 0.716; //in inches
   private double armRotationGearRatio = 5.0 / 1.0 * 52. / 18. * 58. / 18. * 64. / 15.;
-;;
+
+  private boolean m_brakeModeOn = true;
+
   private boolean shouldMove = true;
   private boolean currentlyMoving = false;
 
@@ -57,22 +63,23 @@ public class Arm extends SubsystemBase {
     m_rotationArm.setInverted(false);
     m_extendArm.setInverted(false);
 
-    m_rotationArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
-;  m_extendArm.setIdleMode(CANSparkMax.IdleMode.kBrake);;;;;;;;
+    setIdleMode(m_brakeModeOn);
 
     resetExtenderEncoder(0.5);
-    resetRotationEncoder(45);
+    resetRotationEncoder(32);
 
     m_rotationArm.setSmartCurrentLimit(40);
     m_extendArm.setSmartCurrentLimit(40);
   }
 
   public double getRotationArmPosition() {
-    return m_rotationArm.getEncoder().getPosition() * 360 * armRotationGearRatio;
+    return m_rotationArm.getEncoder().getPosition() * 360 / armRotationGearRatio;
   }
 
+  
+
   public double getExtensionArmPosition() {
-    return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius * armExtensionGearRatio * 2. * Math.PI;
+    return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius / armExtensionGearRatio * 2. * Math.PI;
   }
 
   // Moves arm to position using angle and extend (also stops it when needs to)
@@ -117,7 +124,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void setExtensionMotor(double percentOutput) {
-    double voltage = percentOutput * 12. - 0.6 * Math.cos(Math.toRadians(getRotationArmPosition()));
+    double voltage = percentOutput * 12. - 0.3 * Math.cos(Math.toRadians(getRotationArmPosition()));
     m_extendArm.setVoltage(voltage);
     SmartDashboard.putNumber("extensionMotor", voltage);
     
@@ -126,26 +133,30 @@ public class Arm extends SubsystemBase {
   public void setRotationMotor(double percentOutput) {
     double extensionPercent = getExtensionArmPosition() / 17.;
     // inner peaces charge you with excitment
-    double inVolts = .1;
-    double outVolts = .2;
+    double inVolts = .25;
+    double outVolts = .4;
 
-    double voltageFactor = inVolts * (1 - extensionPercent) + outVolts * extensionPercent;;
+    double voltageFactor = inVolts * (1 - extensionPercent) + outVolts * extensionPercent;
 
     double voltage = percentOutput * 12 + voltageFactor * Math.sin(Math.toRadians(getRotationArmPosition()));
-    m_rotationArm.setVoltage(voltage);;
+    m_rotationArm.setVoltage(voltage);
     SmartDashboard.putNumber("rotationMotor", voltage);
   }
 
   public void manualMoveArm(double rotationSpeed, double extensionSpeed) {
+    
     // currentlyMoving = rotationSpeed != 0;
     if (safeExtension()) {
       setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed));
       setExtensionMotor(m_extendRateLimiter.calculate(extensionSpeed) * 0.2);
-    } else if (getExtensionArmPosition() > 1) {
+    } else if (getExtensionArmPosition() > 0.25) {
       setExtensionMotor(m_extendRateLimiter.calculate(Math.min(extensionSpeed, 0)) * 0.2);
       setRotationMotor(m_rotationRateLimiter.calculate(Math.max(rotationSpeed, 0)));
-    } else {
+    } else if (getRotationArmPosition() > 40 || rotationSpeed > 0) {
       setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed));
+      setExtensionMotor(0);
+    } else {
+      setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed) * 0.1);
       setExtensionMotor(0);
     }
     
@@ -167,10 +178,9 @@ public class Arm extends SubsystemBase {
         m_rotationArm.set(-0.01 * m_rotationArm.getEncoder().getVelocity());
       }
     }*/
+    
     // Not correct right now, but main idea
-    if(!safeExtension() && getExtensionArmPosition() > 1){
-      setExtensionMotor(m_extendRateLimiter.calculate(1) * -0.4);
-    } 
+    
     //System.out.println("extensionMotor " + m_extendArm.get());
  // System.out.println("rotationMotor " + m_rotationArm.get());
     // This method will be called once per scheduler run
@@ -182,23 +192,44 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("rotationPosition", rotateMotor);
   }
 
-  private void resetExtenderEncoder() {
+  public void resetExtenderEncoder() {
     resetExtenderEncoder(0);
   }
 
-  private void resetExtenderEncoder(double position) {
-    m_extendArm.getEncoder().setPosition(position / armExtensionGearRadius / armExtensionGearRatio / 2. / Math.PI);;
+  public void resetExtenderEncoder(double position) {
+    m_extendArm.getEncoder().setPosition(position / armExtensionGearRadius * armExtensionGearRatio / 2. / Math.PI);;
   }
 
-  private void resetRotationEncoder() {
+  public void resetRotationEncoder() {
     resetRotationEncoder(0);
   }
 
-  private void resetRotationEncoder(double angle) {
-    m_rotationArm.getEncoder().setPosition(angle / 360. / armRotationGearRatio);;
+  public void resetRotationEncoder(double angle) {
+    m_rotationArm.getEncoder().setPosition(angle / 360. * armRotationGearRatio);
   }
   
   private boolean safeExtension() {
     return getRotationArmPosition() > 250.;
   }
+
+  public void toggleBrakeMode() {
+    m_brakeModeOn = !m_brakeModeOn;
+    SmartDashboard.putBoolean("Brake Mode", m_brakeModeOn);
+    setIdleMode(m_brakeModeOn);
+  }
+
+  private void setIdleMode(boolean brakeModeOn) {
+    
+    if (brakeModeOn) {
+      
+      m_extendArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+      m_rotationArm.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    } else {
+      
+      m_extendArm.setIdleMode(CANSparkMax.IdleMode.kCoast);
+      m_rotationArm.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    }
+  }
+
+  
 }//pollo - thomas
