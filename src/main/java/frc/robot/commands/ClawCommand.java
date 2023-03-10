@@ -8,21 +8,28 @@ public class ClawCommand extends CommandBase {
 
     Pneumatics pneumatics;
     XboxController xboxController;
-    boolean clawOpen = false;
+    boolean openClaw;
     
-    public ClawCommand (Pneumatics pneumatics, XboxController xboxController) {
+    public ClawCommand (Pneumatics pneumatics, XboxController xboxController, boolean open) {
         this.pneumatics = pneumatics;
         this.xboxController = xboxController;
+        this.openClaw = open;
+        addRequirements(pneumatics);
     }
 
     @Override
     public void initialize() {
-        if (!clawOpen) {
+        if (openClaw) {
             pneumatics.open();
         } else {
             pneumatics.close();
         }
         // clawOpen ? pneumatics.open() : pneumatics.close();
         // why ternary operator no work =(
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 }

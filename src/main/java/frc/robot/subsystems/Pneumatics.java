@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pneumatics extends SubsystemBase {
 
-    private final Joystick m_stick = new Joystick(0);
+    boolean clawOpen = false;
     
     private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(20, PneumaticsModuleType.REVPH, 0, 1);
     public void open() {
@@ -17,5 +17,7 @@ public class Pneumatics extends SubsystemBase {
     public void close() {
         m_doubleSolenoid.set(Value.kReverse);
     }
+
+    
 }
 
