@@ -15,15 +15,23 @@ public class TimedDriveForward extends CommandBase {
 
   private Drivetrain m_drivetrain;
   private double startTime;
+  private double m_speed;
+  private double m_duration;
 
   // public static CommandBase autonomous () {
   //   return Commands.sequence();
   // }
 
-  public TimedDriveForward(Drivetrain drivetrain) {
+  public TimedDriveForward(Drivetrain drivetrain, double speed, double duration) {
     // Will start auto for 3 seconds and then turn off
     m_drivetrain = drivetrain;
+    m_speed = speed;
+    m_duration = duration;
     addRequirements(m_drivetrain);
+  }
+
+  public TimedDriveForward(Drivetrain drivetrain) {
+    this(drivetrain, 0.5, 2);
   }
 
   // Called when the command is initially scheduled.
@@ -35,7 +43,7 @@ public class TimedDriveForward extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivetrain.tankDrive(0.5, 0.5);
+    m_drivetrain.tankDrive(m_speed, m_speed);
   }
 
   // Called once the command ends or is interrupted.
@@ -47,7 +55,7 @@ public class TimedDriveForward extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Timer.getFPGATimestamp() - startTime >= 2.0) {
+    if (Timer.getFPGATimestamp() - startTime >= m_duration) {
         return true;
     } else {
       return false;

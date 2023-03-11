@@ -33,7 +33,7 @@ public class CurvatureDrive extends CommandBase {
   @Override
   public void execute() {
     // m_xboxController.setRumble(RumbleType.kBothRumble, 1);
-    //speedForward is front and back motion
+    // speedForward is front and back motion
     double speedForward = m_xboxController.getRightY() - m_xboxController.getRightTriggerAxis() + m_xboxController.getLeftTriggerAxis();
     if (speedForward > 0) {
       m_drivetrain.curvatureDrive(speedForward, -m_xboxController.getLeftX(), m_xboxController.getLeftBumper());

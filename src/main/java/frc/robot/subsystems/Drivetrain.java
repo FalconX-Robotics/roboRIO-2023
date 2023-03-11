@@ -106,6 +106,7 @@ public class Drivetrain extends SubsystemBase{
         m_leftMotorGroup.set(m_leftRateLimiter.calculate((slowModeOn ? leftPercentOutput / 3 : leftPercentOutput)));
         m_rightMotorGroup.set(m_rightRateLimiter.calculate((slowModeOn ? rightPercentOutput / 3: rightPercentOutput)));
         // System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
+        m_drivetrain.feed();
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick

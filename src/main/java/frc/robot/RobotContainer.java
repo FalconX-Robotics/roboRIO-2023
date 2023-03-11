@@ -29,6 +29,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -53,6 +56,9 @@ public class RobotContainer {
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
   private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
   Pneumatics pneumatics = new Pneumatics();
+  private Command yeetAuto = new SequentialCommandGroup(
+    new ClawCommand(pneumatics, true),
+    new TimedDriveForward(m_drivetrain, -0.5, 2.0));
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
   // The robot's subsystems and commands are defined here...
@@ -129,10 +135,10 @@ public class RobotContainer {
     bButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
 */
     Trigger leftBumper2 = new JoystickButton(m_xboxController2, XboxController.Button.kLeftBumper.value);
-    leftBumper2.onTrue(new ClawCommand(pneumatics, m_xboxController2, false));
+    leftBumper2.onTrue(new ClawCommand(pneumatics, true));
 
     Trigger rightBumper2 = new JoystickButton(m_xboxController2, XboxController.Button.kRightBumper.value);
-    rightBumper2.onTrue(new ClawCommand(pneumatics, m_xboxController2, true));
+    rightBumper2.onTrue(new ClawCommand(pneumatics, false));
     //XboxController2 IS MOVEMENT NOT ARM
     Trigger rightBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
     rightBumper.whileTrue(new SlowModeCommand());
@@ -155,6 +161,7 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
     // return new AutoBalance(0, m_drivetrain);
-    return new TimedDriveForward(m_drivetrain);
+    // return new TimedDriveForward(m_drivetrain);
+    return yeetAuto;
   }
 }
