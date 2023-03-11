@@ -69,8 +69,6 @@ public class RobotContainer {
   private Command yeetAuto = new SequentialCommandGroup(
     armUpCommand,
     new ClawCommand(pneumatics, true),
-    new WaitCommand(0.5),
-    new TimedDriveForward(m_drivetrain, 0.5, 0.5),
     new WaitCommand(2),
     new TimedDriveForward(m_drivetrain, -0.5, 2.0),
     new ClawCommand(pneumatics, false));
