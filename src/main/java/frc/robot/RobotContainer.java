@@ -58,7 +58,8 @@ public class RobotContainer {
   Pneumatics pneumatics = new Pneumatics();
   private Command yeetAuto = new SequentialCommandGroup(
     new ClawCommand(pneumatics, true),
-    new TimedDriveForward(m_drivetrain, -0.5, 2.0));
+    new TimedDriveForward(m_drivetrain, -0.5, 2.0),
+    new ClawCommand(pneumatics, false));
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
   // The robot's subsystems and commands are defined here...
