@@ -147,7 +147,13 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("extensionMotor", voltage);
     
   }
-;
+  public boolean moveToPosition2(double angle, double extend){
+
+    setRotationMotor(MathUtil.clamp((getRotationArmPosition() - angle) * .02, -1, 1));
+    setExtensionMotor(MathUtil.clamp((getExtensionArmPosition() - extend) * .1, -.3, .3));
+
+    return Math.abs(getRotationArmPosition() - angle) <= 5 && Math.abs(getExtensionArmPosition() - extend) <= 1;
+  }
   public void setRotationMotor(double percentOutput) {
     double extensionPercent = getExtensionArmPosition() / 17.;
     // inner peaces charge you with excitment
