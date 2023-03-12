@@ -25,6 +25,8 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,6 +48,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private static final String m_yeetAutoString = "YeetAuto";
+  private static final String m_scoreAutoString = "ScoreAuto";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private final XboxController m_xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
   private final XboxController m_xboxController2 = new XboxController(Constants.XBOX_CONTROLLER_PORT2);
@@ -111,6 +118,11 @@ public class RobotContainer {
         command ->
           Shuffleboard.addEventMarker(
             "Command Finished", command.getName(), EventImportance.kNormal));
+
+    // Sendable Chooser stuff
+    m_chooser.setDefaultOption("Yeet Auto", m_yeetAutoString);
+    m_chooser.addOption("Score Auto", m_scoreAutoString);
+    SmartDashboard.putData("Auto Choices", m_chooser);
   }
 
   /**
@@ -183,6 +195,10 @@ public class RobotContainer {
     // return Autos.exampleAuto(m_exampleSubsystem);
     // return new AutoBalance(0, m_drivetrain);
     // return new TimedDriveForward(m_drivetrain);
+    if (m_chooser.getSelected().equals(m_scoreAutoString))
+    {
+      return scoreAuto;
+    }
     return yeetAuto;
   }
 }
