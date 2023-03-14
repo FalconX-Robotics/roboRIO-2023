@@ -84,16 +84,13 @@ public class Arm extends SubsystemBase {
     return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius / armExtensionGearRatio * 2. * Math.PI;
   }
 
-  public void unsafeMoveToPosition(double rotation, double extension) {
-    if (Math.abs(getRotationArmPosition() - rotation) < 3 && 
-        Math.abs(getExtensionArmPosition() - extension) < 0.25) {
-        stopMotors();
-        return;
-    }
+  public boolean unsafeMoveToPosition(double angle, double extend) {
+    
+    setRotationMotor(MathUtil.clamp((angle - getRotationArmPosition()) * .02, -1, 1));
+    setExtensionMotor(MathUtil.clamp((extend - getExtensionArmPosition()) * .1, -.3, .3));
 
-    setExtensionMotor(MathUtil.clamp(extension - getExtensionArmPosition(), -0.5, 0.5) * 0.05);
-    setRotationMotor((rotation - getRotationArmPosition()) * 0.05);
-}
+    return Math.abs(getRotationArmPosition() - angle) <= 5 && Math.abs(getExtensionArmPosition() - extend) <= 1;
+  }
 
   private void stopMotors() {
     setExtensionMotor(0);
