@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -56,9 +57,29 @@ public class RobotContainer {
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
   private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
   Pneumatics pneumatics = new Pneumatics();
+  private Command armUpCommand = Commands.startEnd(
+    () -> {
+      m_arm.setExtensionMotor(0);
+      m_arm.setRotationMotor(.5);
+    }, 
+    () -> {m_arm.setExtensionMotor(0);
+    m_arm.setRotationMotor(0);
+  }, m_arm).withTimeout(.2);
+
   private Command yeetAuto = new SequentialCommandGroup(
+    armUpCommand,
     new ClawCommand(pneumatics, true),
-    new TimedDriveForward(m_drivetrain, -0.5, 2.0));
+    new WaitCommand(2),
+    new TimedDriveForward(m_drivetrain, -0.5, 2.0),
+    new ClawCommand(pneumatics, false));
+
+  private Command scoreAuto = new SequentialCommandGroup(
+    new ClawCommand(pneumatics, true),
+    new WaitCommand(0.5),
+    new TimedDriveForward(m_drivetrain, 0.5, 0.5),
+    new WaitCommand(1.0));
+
+  
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
   // The robot's subsystems and commands are defined here...
