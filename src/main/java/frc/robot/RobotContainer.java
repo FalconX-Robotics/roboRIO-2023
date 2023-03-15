@@ -13,6 +13,7 @@ import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualArm;
 import frc.robot.commands.MoveArm;
+import frc.robot.commands.MoveArmSequence;
 import frc.robot.commands.ResetEncoders;
 import frc.robot.commands.SlowModeCommand;
 import frc.robot.commands.TankDrive;
@@ -47,15 +48,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-  private final XboxController m_xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
-  private final XboxController m_xboxController2 = new XboxController(Constants.XBOX_CONTROLLER_PORT2);
+  private final XboxController m_drivetrainController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
+  private final XboxController m_armController = new XboxController(Constants.XBOX_CONTROLLER_PORT2);
   // private final Camera m_camera = new Camera();
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Arm m_arm = new Arm();
-  private final ManualArm m_manualArm = new ManualArm(m_xboxController2, m_arm);
-  private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_xboxController);
-  private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_xboxController);
-  private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_xboxController);
+  private final ManualArm m_manualArm = new ManualArm(m_armController, m_arm);
+  private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_drivetrainController);
+  private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_drivetrainController);
+  private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_drivetrainController);
   Pneumatics pneumatics = new Pneumatics();
   private Command armUpCommand = Commands.startEnd(
     () -> {
@@ -138,37 +139,38 @@ public class RobotContainer {
     /* Just in case bumper retracted state in the case we don't use high arm
     Trigger rBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
     rBumper.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED)); */
-/* 
-    Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kY.value);
-    yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HUMAN_INTAKE)); 
 
-    Trigger aButton = new JoystickButton(m_xboxController, XboxController.Button.kA.value);
-    aButton.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED));
+    // high
+    Trigger yButton = new JoystickButton(m_armController, XboxController.Button.kY.value);
+    yButton.onTrue(new MoveArmSequence(255., 16., m_arm).withTimeout(10.));
+    // mid
+    Trigger bButton = new JoystickButton(m_armController, XboxController.Button.kB.value);
+    bButton.onTrue(new MoveArmSequence(260., 2., m_arm).withTimeout(10.));
+    // low
+    Trigger aButton = new JoystickButton(m_armController, XboxController.Button.kA.value);
+    aButton.onTrue(new MoveArmSequence(290., 2., m_arm).withTimeout(10.));
+    // go home and cry with the homies
+    Trigger xButton = new JoystickButton(m_armController, XboxController.Button.kX.value);
+    xButton.onTrue(new MoveArmSequence(45., 0.2, m_arm).withTimeout(10.));
 
-    Trigger xButton = new JoystickButton(m_xboxController, XboxController.Button.kX.value);
-    xButton.onTrue(new MoveArm(m_arm, MoveArm.State.MID_ARM));
-*/
-    /* Don't want to risk high for right now
-    Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kX.value);
-    yButton.onTrue(new MoveArm(m_arm, MoveArm.State.HIGH_ARM)); */
     /*
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
     bButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
 */
-    Trigger leftBumper2 = new JoystickButton(m_xboxController2, XboxController.Button.kLeftBumper.value);
+    Trigger leftBumper2 = new JoystickButton(m_armController, XboxController.Button.kLeftBumper.value);
     leftBumper2.onTrue(new ClawCommand(pneumatics, true));
 
-    Trigger rightBumper2 = new JoystickButton(m_xboxController2, XboxController.Button.kRightBumper.value);
+    Trigger rightBumper2 = new JoystickButton(m_armController, XboxController.Button.kRightBumper.value);
     rightBumper2.onTrue(new ClawCommand(pneumatics, false));
     //XboxController2 IS MOVEMENT NOT ARM
-    Trigger rightBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
+    Trigger rightBumper = new JoystickButton(m_drivetrainController, XboxController.Button.kRightBumper.value);
     rightBumper.whileTrue(new SlowModeCommand());
 
-    Trigger startButton2 = new JoystickButton(m_xboxController2, XboxController.Button.kStart.value);
+    Trigger startButton2 = new JoystickButton(m_armController, XboxController.Button.kStart.value);
     startButton2.onTrue(new ResetEncoders(m_arm));
 
     
-    Trigger backButton2 = new JoystickButton(m_xboxController2, XboxController.Button.kBack.value);
+    Trigger backButton2 = new JoystickButton(m_armController, XboxController.Button.kBack.value);
     backButton2.onTrue(new ToggleBrakeMode(m_arm));
     
   }
