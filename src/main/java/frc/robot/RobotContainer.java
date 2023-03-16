@@ -83,6 +83,7 @@ public class RobotContainer {
   private Command scoreAuto = new SequentialCommandGroup(
     new ClawCommand(pneumatics, true),
     new WaitCommand(0.5),
+    // Temp removal to test code
     new TimedDriveForward(m_drivetrain, 0.5, 0.5),
     new WaitCommand(1.0));
 
@@ -122,7 +123,7 @@ public class RobotContainer {
     // Sendable Chooser stuff
     m_chooser.setDefaultOption("Yeet Auto", m_yeetAutoString);
     m_chooser.addOption("Score Auto", m_scoreAutoString);
-    SmartDashboard.putData("Auto Choices", m_chooser);
+    SmartDashboard.putData("Auto Selecter", m_chooser);
   }
 
   /**
