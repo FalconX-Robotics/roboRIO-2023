@@ -165,7 +165,11 @@ public class RobotContainer {
     // go home and cry with the homies
     Trigger xButton = new JoystickButton(m_armController, XboxController.Button.kX.value);
     xButton.onTrue(new MoveArmSequence(40., 0.25, m_arm).withTimeout(10.));
-
+    // HUMAN (player) (IS THAT AN UNDERTALE REFE-)
+    Trigger rTrigger = new Trigger(() -> {
+      return m_armController.getRightTriggerAxis() > .5;
+    });
+    rTrigger.onTrue(new MoveArmSequence(230., 165, m_arm));
     /*
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
     bButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
