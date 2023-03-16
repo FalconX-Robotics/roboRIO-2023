@@ -35,6 +35,8 @@ import frc.robot.util.BetterSlewRateLimiter;
  *
  * <h1> <em> c'est vrai
  * also you spelled information wrong (skill issue)
+ * 
+ * lorem ipsum dolor sit amet
  */
 
 public class Arm extends SubsystemBase {
@@ -84,16 +86,13 @@ public class Arm extends SubsystemBase {
     return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius / armExtensionGearRatio * 2. * Math.PI;
   }
 
-  public void unsafeMoveToPosition(double rotation, double extension) {
-    if (Math.abs(getRotationArmPosition() - rotation) < 3 && 
-        Math.abs(getExtensionArmPosition() - extension) < 0.25) {
-        stopMotors();
-        return;
-    }
+  public boolean unsafeMoveToPosition(double angle, double extend) {
+    System.out.println("Target angle: " + angle + " current Angle: " + getRotationArmPosition());
+    setRotationMotor(MathUtil.clamp((angle - getRotationArmPosition()) * .02, -1., 1.));
+    setExtensionMotor(MathUtil.clamp((extend - getExtensionArmPosition()) * .1, -.5, .5));
 
-    setExtensionMotor(MathUtil.clamp(extension - getExtensionArmPosition(), -0.5, 0.5) * 0.05);
-    setRotationMotor((rotation - getRotationArmPosition()) * 0.05);
-}
+    return Math.abs(getRotationArmPosition() - angle) <= 5 && Math.abs(getExtensionArmPosition() - extend) <= 1;
+  }
 
   private void stopMotors() {
     setExtensionMotor(0);
@@ -147,7 +146,13 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("extensionMotor", voltage);
     
   }
-;
+  public boolean moveToPosition2(double angle, double extend){
+
+    setRotationMotor(MathUtil.clamp((getRotationArmPosition() - angle) * .02, -1, 1));
+    setExtensionMotor(MathUtil.clamp((getExtensionArmPosition() - extend) * .1, -.3, .3));
+
+    return Math.abs(getRotationArmPosition() - angle) <= 5 && Math.abs(getExtensionArmPosition() - extend) <= 1;
+  }
   public void setRotationMotor(double percentOutput) {
     double extensionPercent = getExtensionArmPosition() / 17.;
     // inner peaces charge you with excitment

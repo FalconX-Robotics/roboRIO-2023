@@ -32,7 +32,7 @@ public class ManualArm extends CommandBase {
     @Override
     public void execute() {
         m_rotationSpeed = m_controller.getLeftY();
-        m_extensionSpeed = -m_controller.getRightY();
+        m_extensionSpeed = m_controller.getRightY();
         m_rotationSpeed = MathUtil.applyDeadband(m_rotationSpeed, 0.1);
         m_extensionSpeed = MathUtil.applyDeadband(m_extensionSpeed, 0.1);
         m_arm.manualMoveArm(m_rotationSpeed, m_extensionSpeed);

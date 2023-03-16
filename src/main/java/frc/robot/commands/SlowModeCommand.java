@@ -15,7 +15,7 @@ public class SlowModeCommand extends CommandBase {
     @Override
     public void execute() {
         if (type == SlowModeType.HOLD) {
-            Drivetrain.slowModeOn = true;    
+            Drivetrain.slowModeOn = false;    
         } 
         
     }
@@ -30,7 +30,7 @@ public class SlowModeCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         if (type == SlowModeType.HOLD) {
-            Drivetrain.slowModeOn = false;
+            Drivetrain.slowModeOn = true;
         }
         
     }
