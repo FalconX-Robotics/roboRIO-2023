@@ -87,8 +87,8 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean unsafeMoveToPosition(double angle, double extend) {
-    
-    setRotationMotor(MathUtil.clamp((angle - getRotationArmPosition()) * .02, -1, 1));
+    System.out.println("Target angle: " + angle + " current Angle: " + getRotationArmPosition());
+    setRotationMotor(MathUtil.clamp((angle - getRotationArmPosition()) * -.02, -.3, .3));
     setExtensionMotor(MathUtil.clamp((extend - getExtensionArmPosition()) * .1, -.3, .3));
 
     return Math.abs(getRotationArmPosition() - angle) <= 5 && Math.abs(getExtensionArmPosition() - extend) <= 1;

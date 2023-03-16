@@ -142,16 +142,16 @@ public class RobotContainer {
 
     // high
     Trigger yButton = new JoystickButton(m_armController, XboxController.Button.kY.value);
-    yButton.onTrue(new MoveArmSequence(255., 16., m_arm).withTimeout(10.));
+    yButton.onTrue(new MoveArmSequence(250., 16.5, m_arm).withTimeout(10.));
     // mid
     Trigger bButton = new JoystickButton(m_armController, XboxController.Button.kB.value);
-    bButton.onTrue(new MoveArmSequence(260., 2., m_arm).withTimeout(10.));
+    bButton.onTrue(new MoveArmSequence(260., 1., m_arm).withTimeout(10.));
     // low
     Trigger aButton = new JoystickButton(m_armController, XboxController.Button.kA.value);
-    aButton.onTrue(new MoveArmSequence(290., 2., m_arm).withTimeout(10.));
+    aButton.onTrue(new MoveArmSequence(315., 5., m_arm).withTimeout(10.));
     // go home and cry with the homies
     Trigger xButton = new JoystickButton(m_armController, XboxController.Button.kX.value);
-    xButton.onTrue(new MoveArmSequence(45., 0.2, m_arm).withTimeout(10.));
+    xButton.onTrue(new MoveArmSequence(40., 0.25, m_arm).withTimeout(10.));
 
     /*
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
