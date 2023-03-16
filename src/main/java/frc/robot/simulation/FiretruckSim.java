@@ -25,16 +25,19 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
         public final double m_maxAngleRads;
         public final double m_armMassKg;
         public final double m_armInitialCOGDistanceMeters;
+        public final double m_armMaxFrictionTorqueNewtonMeters;
 
         public ArmParameters(DCMotor gearbox, double gearing, double retractedMOI,
-                double minAngleRads, double maxAngleRads, double armMassKg, double m_armInitialCOGDistanceMeters) {
+                double minAngleRads, double maxAngleRads, double armMassKg, double armInitialCOGDistanceMeters,
+                double armMaxFrictionTorqueNewtonMeters) {
             this.m_gearbox = gearbox;
             this.m_gearing = gearing;
             this.m_retractedMOI = retractedMOI;
             this.m_minAngleRads = minAngleRads;
             this.m_maxAngleRads = maxAngleRads;
             this.m_armMassKg = armMassKg;
-            this.m_armInitialCOGDistanceMeters = m_armInitialCOGDistanceMeters;
+            this.m_armInitialCOGDistanceMeters = armInitialCOGDistanceMeters;
+            this.m_armMaxFrictionTorqueNewtonMeters = armMaxFrictionTorqueNewtonMeters;
         }
     }
 
@@ -46,9 +49,11 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
         public final double m_minDistanceMeters;
         public final double m_maxDistanceMeters;
         public final double m_carriageInitialCOGDistanceMeters;
+        public final double m_extenderMaxFrictionForceNewtons;
 
         public ExtenderParameters(DCMotor gearbox, double gearing, double carriageMassKg, double drumRadiusMeters,
-                double minDistanceMeters, double maxDistanceMeters, double carriageInitialCOGDistanceMeters) {
+                double minDistanceMeters, double maxDistanceMeters, double carriageInitialCOGDistanceMeters,
+                double extenderMaxFrictionForceNewtons) {
             this.m_gearbox = gearbox;
             this.m_gearing = gearing;
             this.m_carriageMassKg = carriageMassKg;
@@ -56,6 +61,7 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
             this.m_minDistanceMeters = minDistanceMeters;
             this.m_maxDistanceMeters = maxDistanceMeters;
             this.m_carriageInitialCOGDistanceMeters = carriageInitialCOGDistanceMeters;
+            this.m_extenderMaxFrictionForceNewtons = extenderMaxFrictionForceNewtons;
         }
     }
 
@@ -167,7 +173,7 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
     }
 
     public double getExtenderDistanceMeters() {
-        return m_y.get(2, 0);
+        return m_y.get(1, 0);
     }
 
     protected Matrix<N4, N1> updateX(Matrix<N4, N1> currentXhat, Matrix<N2, N1> currentU, double dtSeconds) {
@@ -199,6 +205,17 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
                         - m_armParameters.m_armMassKg * 9.81 * armCOGDistanceMeters / A_J * Math.sin(x.get(0, 0)),
                         0,
                         9.81 * Math.cos(x.get(0, 0))
+                    )
+                );
+
+                // friction
+                
+                xdot = xdot.plus(
+                    VecBuilder.fill(
+                        0,
+                        - Math.signum(xdot.get(0, 0)) * m_armParameters.m_armMaxFrictionTorqueNewtonMeters / A_J,
+                        0,
+                        - Math.signum(xdot.get(2, 0)) * m_extenderParameters.m_extenderMaxFrictionForceNewtons / m_extenderParameters.m_carriageMassKg
                     )
                 );
 
@@ -234,7 +251,5 @@ public class FiretruckSim extends LinearSystemSim<N4, N2, N2> {
         return updatedXhat;
         
     }
-
-   
     
 }

@@ -4,19 +4,19 @@
 
 package frc.robot.subsystems;
 
-import javax.annotation.processing.SupportedOptions;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.CAN;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.ManualArm;
+import frc.robot.Robot;
+import frc.robot.simulation.CANSparkMaxSim;
+import frc.robot.simulation.FiretruckSim;
 import frc.robot.util.BetterSlewRateLimiter;
 
 /**
@@ -44,8 +44,8 @@ public class Arm extends SubsystemBase {
   // Private variable for two neo motors
   private double deez = 69.420; // Julian was here
   //Julian was there
-  private final CANSparkMax m_rotationArm  = new CANSparkMax(Constants.ARM_ROTATION_MOTOR_PORT, MotorType.kBrushless);
-  private final CANSparkMax m_extendArm = new CANSparkMax(Constants.ARM_EXTENSION_MOTOR_PORT, MotorType.kBrushless);
+  private CANSparkMax m_rotationArm;
+  private CANSparkMax m_extendArm;
       //Julian is everywhere...
   private double m_targetAngle = 0;
   private double m_targetExtension = 0;
@@ -64,6 +64,14 @@ public class Arm extends SubsystemBase {
   private boolean currentlyMoving = false;
 
   public Arm() {
+   if (Robot.isSimulation()) {
+      m_rotationArm = new CANSparkMaxSim("Rotation Arm", Constants.ARM_ROTATION_MOTOR_PORT, MotorType.kBrushless);
+      m_extendArm = new CANSparkMaxSim("Extension Arm", Constants.ARM_EXTENSION_MOTOR_PORT, MotorType.kBrushless);
+    } else {
+      m_rotationArm = new CANSparkMax(Constants.ARM_ROTATION_MOTOR_PORT, MotorType.kBrushless);
+      m_extendArm = new CANSparkMax(Constants.ARM_EXTENSION_MOTOR_PORT, MotorType.kBrushless);
+    }
+
     m_rotationArm.setInverted(false);
     m_extendArm.setInverted(false);
 
@@ -74,22 +82,34 @@ public class Arm extends SubsystemBase {
 
     m_rotationArm.setSmartCurrentLimit(40);
     m_extendArm.setSmartCurrentLimit(40);
+
+   
   }
 
   public double getRotationArmPosition() {
-    return m_rotationArm.getEncoder().getPosition() * 360 / armRotationGearRatio;
+    if (Robot.isSimulation()) {
+      return Math.toDegrees(m_firetruckSim.getArmAngleRads());
+    } else {
+      return m_rotationArm.getEncoder().getPosition() * 360 / armRotationGearRatio;
+    }
   }
 
   
 
   public double getExtensionArmPosition() {
-    return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius / armExtensionGearRatio * 2. * Math.PI;
+    if (Robot.isSimulation()) {
+      return m_firetruckSim.getExtenderDistanceMeters() / 0.0254;
+    } else {
+      return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius / armExtensionGearRatio * 2. * Math.PI;
+    }
+
   }
 
   public boolean unsafeMoveToPosition(double angle, double extend) {
-    
-    setRotationMotor(MathUtil.clamp((angle - getRotationArmPosition()) * .02, -1, 1));
-    setExtensionMotor(MathUtil.clamp((extend - getExtensionArmPosition()) * .1, -.3, .3));
+    SmartDashboard.putNumber("Target Angle", angle);
+    SmartDashboard.putNumber("Rotation Output", MathUtil.clamp((angle - getRotationArmPosition()) * -.02, -1, 1));
+    setRotationMotor(MathUtil.clamp((angle - getRotationArmPosition()) * -.02, -1, 1));
+    setExtensionMotor(MathUtil.clamp((extend - getExtensionArmPosition()) * -.1, -.3, .3));
 
     return Math.abs(getRotationArmPosition() - angle) <= 5 && Math.abs(getExtensionArmPosition() - extend) <= 1;
   }
@@ -255,5 +275,31 @@ public class Arm extends SubsystemBase {
     }
   }
 
+
+  private FiretruckSim m_firetruckSim = new FiretruckSim(
+  new FiretruckSim.ArmParameters(
+    DCMotor.getNEO(1), 
+    armRotationGearRatio,
+    1. / 3. * 4. * 0.5 * 0.5, 
+    Math.toRadians(32),
+    Math.toRadians(330), 
+    4.1,
+    0.25,
+    0),
+  new FiretruckSim.ExtenderParameters(
+    DCMotor.getNEO(1),
+    armExtensionGearRatio,
+    3,
+    armExtensionGearRadius * 0.0254,
+    0,
+    17 * 0.0254,
+    0.25,
+    0));
   
+  @Override
+  public void simulationPeriodic() {
+    if (DriverStation.isDisabled()) { return; }
+      m_firetruckSim.setInput(m_rotationArm.getAppliedOutput(), m_extendArm.getAppliedOutput());
+      m_firetruckSim.update(0.02);
+  }
 }//pollo - thomas
