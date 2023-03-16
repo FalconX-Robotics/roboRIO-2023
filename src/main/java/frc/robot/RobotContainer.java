@@ -82,11 +82,8 @@ public class RobotContainer {
     new ClawCommand(pneumatics, false));
 
   private Command scoreAuto = new SequentialCommandGroup(
-    new ClawCommand(pneumatics, true),
-    new WaitCommand(0.5),
-    // Temp removal to test code
-    new TimedDriveForward(m_drivetrain, 0.5, 0.5),
-    new WaitCommand(1.0));
+    armUpCommand,
+    new ClawCommand(pneumatics, true));
 
   
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
