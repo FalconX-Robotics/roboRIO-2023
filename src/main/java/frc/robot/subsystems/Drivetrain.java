@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -260,8 +261,8 @@ public class Drivetrain extends SubsystemBase{
 
         m_gyroSim.setRawHeading(m_drivetrainSimulator.getHeading().getDegrees());
 
-        Transform2d startPostion = new Transform2d(new Translation2d(0, 0), new Rotation2d());
-        m_field.setRobotPose(m_odometry.getPoseMeters().transformBy(startPostion));
+        Pose2d pose = m_odometry.getPoseMeters();
+        m_field.setRobotPose(new Pose2d(pose.getX() + 3, pose.getY() + 3, pose.getRotation()));
         SmartDashboard.putData(m_field);
     }
 }
