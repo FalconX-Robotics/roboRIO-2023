@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.cameraserver.CameraServer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -101,6 +102,9 @@ public class RobotContainer {
     configureBindings();
     configureButtonBindings();
 
+    // Camera code
+    CameraServer.startAutomaticCapture();
+
     // Command Scheduler that will help troubleshoot (hopefully)
     CommandScheduler.getInstance()
       .onCommandInitialize(
@@ -122,6 +126,7 @@ public class RobotContainer {
     m_chooser.setDefaultOption("Yeet Auto", m_yeetAutoString);
     m_chooser.addOption("Score Auto", m_scoreAutoString);
     SmartDashboard.putData("Auto Selecter", m_chooser);
+
   }
 
   /**
