@@ -91,7 +91,7 @@ public class Arm extends SubsystemBase {
     setRotationMotor(MathUtil.clamp((angle - getRotationArmPosition()) * .02, -1., 1.));
     setExtensionMotor(MathUtil.clamp((extend - getExtensionArmPosition()) * .1, -.5, .5));
 
-    return Math.abs(getRotationArmPosition() - angle) <= 5 && Math.abs(getExtensionArmPosition() - extend) <= 1;
+    return Math.abs(getRotationArmPosition() - angle) <= 1 && Math.abs(getExtensionArmPosition() - extend) <= .25;
   }
 
   private void stopMotors() {
