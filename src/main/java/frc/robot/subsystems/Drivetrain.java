@@ -98,7 +98,8 @@ public class Drivetrain extends SubsystemBase{
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
-        
+        SmartDashboard.putNumber("distance", getDistance());
+        SmartDashboard.putNumber("gyrow pitch from drivetrain", getGyro().getPitch());
     }
     // Define tankDrive
         // Both using y
@@ -159,11 +160,11 @@ public class Drivetrain extends SubsystemBase{
 
     
     public double getRightDistance() {
-        return m_rightBackMotor.getEncoder().getPosition() * Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+        return m_rightBackMotor.getEncoder().getPosition() / Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
     }
 
     public double getLeftDistance() {
-        return m_leftBackMotor.getEncoder().getPosition() * Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+        return m_leftBackMotor.getEncoder().getPosition() / Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
     }
 
     public double getDistance() {

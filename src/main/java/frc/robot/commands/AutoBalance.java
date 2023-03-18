@@ -2,7 +2,9 @@ package frc.robot.commands;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -32,7 +34,7 @@ public class AutoBalance extends CommandBase {
     
     @Override
     public void initialize() {
-        addRequirements(m_drivetrain);
+        m_balanceState = State.MOVE_FORWARD;
         gyro = m_drivetrain.getGyro();
         gyro.setYaw(0.0);
         startingPitch = gyro.getPitch();
@@ -40,6 +42,8 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void execute() {
+        SmartDashboard.putString("AutoBalance State", m_balanceState.toString());
+        SmartDashboard.putNumber("Gyro pitch", gyro.getPitch());
         distanceMoved = m_drivetrain.getDistance();
         switch (m_balanceState) {
             case MOVE_FORWARD:
@@ -71,6 +75,7 @@ public class AutoBalance extends CommandBase {
         if (Math.abs(gyro.getPitch() - startingPitch) < 7) {
             m_drivetrain.tankDrive(-0.25, -0.25);
         } else {
+            m_drivetrain.resetEncoders();
             m_balanceState = State.MOVE_UP;
         }
     }
@@ -79,7 +84,6 @@ public class AutoBalance extends CommandBase {
         if (Math.abs(gyro.getPitch() - startingPitch) > 6) {
             m_drivetrain.tankDrive(-0.2, -0.2);
         } else {
-            m_drivetrain.resetEncoders();
             m_balanceState = State.BALANCE;
         }
     }
@@ -102,20 +106,26 @@ public class AutoBalance extends CommandBase {
         // } else {
         //     m_drivetrain.tankDrive(0, 0);
         // }
-        double driveSpeed = distanceToCenter * 0.01 + gyro.getYaw() * 0.01;
-        
+        double driveSpeed = distanceToCenter * 0.0 + gyro.getPitch() * -0.005;
+        driveSpeed = MathUtil.clamp(driveSpeed, -0.3, 0.3);
+        if (Math.abs(gyro.getPitch()) < 1.5) {
+            driveSpeed = 0;
+        }
+
         m_drivetrain.tankDrive(driveSpeed, driveSpeed);
         
-        distanceToCenter = 23 - distanceMoved;
+        distanceToCenter = 23 * 0.0254 - distanceMoved;
+
+        SmartDashboard.putNumber("Distance to center", distanceToCenter);
+        SmartDashboard.putNumber("Distance moved", distanceMoved);
+        SmartDashboard.putNumber("Drive speed", driveSpeed);
         // robot is 28 inches long
         // robot should move 23 inches
 
         // if (distanceToCenter <= 0.5) {
         //     balanced = true;
         // }
-        counter++;
-        if (counter > 500) {
-            balanced = true;
-        }
+
+
     }
 }

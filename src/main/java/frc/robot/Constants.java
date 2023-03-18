@@ -43,7 +43,7 @@ public final class Constants {
   // Gear Ratios
   public static final double ARM_ROTATION_GEAR_RATIO = 5.0 / 1.0 * 52. / 18. * 58. / 18. * 64. / 15.;
   public static final double DRIVETRAIN_GEARBOX = 50.0/12.0*50./24.;
-  public static final double DRIVETRAIN_WHEEL_DIAMETER = 6; // inches
+  public static final double DRIVETRAIN_WHEEL_DIAMETER = 0.0254 * 6; // meters
 
   // SysId, DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING
   // have a nice day - will
