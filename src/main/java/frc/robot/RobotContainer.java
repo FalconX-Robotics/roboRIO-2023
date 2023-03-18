@@ -195,7 +195,8 @@ public class RobotContainer {
 
     // low
     Trigger aButton = new JoystickButton(m_armController, XboxController.Button.kA.value);
-    aButton.onTrue(new MoveArmSequence(315., 5., m_arm)
+    // aButton.onTrue(new MoveArmSequence(315., 5., m_arm) // KEEP FOR GROUND INTAKE
+    aButton.onTrue(new MoveArmSequence(300., .25, m_arm)
     .withTimeout(10.)
     .until(joystickInterrupt));
 

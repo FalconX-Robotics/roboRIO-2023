@@ -39,9 +39,9 @@ public class CurvatureDrive extends CommandBase {
     // double rotateSpeed = m_xboxController.getLeftX();
 
     if (speedForward > 0 && !quickTurn) {
-      m_drivetrain.curvatureDrive(speedForward, -m_xboxController.getLeftX() * (quickTurn?.325:.75), quickTurn);
+      m_drivetrain.curvatureDrive(speedForward, -m_xboxController.getLeftX() * (quickTurn?.4:.75), quickTurn);
     } else {
-      m_drivetrain.curvatureDrive(speedForward, m_xboxController.getLeftX() * (quickTurn?.325:0.75), quickTurn);
+      m_drivetrain.curvatureDrive(speedForward, m_xboxController.getLeftX() * (quickTurn?.4:0.75), quickTurn);
     }
   }
 
