@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -29,7 +30,11 @@ public class Drivetrain extends SubsystemBase{
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
     
+    public static boolean slowModeOn;
+
     PIDController pidController = new PIDController(92.2, 0, 7.3);
+
+    
     // What is encoder
     // Depracated for now
     // private final Encoder m_leftEncoder = new Encoder(
@@ -53,6 +58,8 @@ public class Drivetrain extends SubsystemBase{
     // Odometry supposedly tracks the position over time?
     private final DifferentialDriveOdometry m_odometry;
     
+    private final SlewRateLimiter m_leftRateLimiter = new SlewRateLimiter(1);
+    private final SlewRateLimiter m_rightRateLimiter = new SlewRateLimiter(1);
     
     public PigeonIMU getGyro() {
         return m_gyro;
@@ -64,6 +71,11 @@ public class Drivetrain extends SubsystemBase{
         m_rightFrontMotor.setInverted(false);
         m_rightBackMotor.setInverted(false);
 
+        m_leftFrontMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        m_rightFrontMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        m_leftBackMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        m_rightBackMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
         // do we even have encoders?
         m_leftEncoder.setPositionConversionFactor(0.4788);
         m_leftEncoder.setVelocityConversionFactor(0.4788);
@@ -74,6 +86,11 @@ public class Drivetrain extends SubsystemBase{
             m_leftEncoder.getPosition(),
             m_rightEncoder.getPosition()            
         );
+
+        m_leftFrontMotor.setSmartCurrentLimit(60);
+        m_leftBackMotor.setSmartCurrentLimit(60);
+        m_rightFrontMotor.setSmartCurrentLimit(60);
+        m_rightBackMotor.setSmartCurrentLimit(60);
        }
     // Command base -> ab
     // private Command command = new
@@ -81,22 +98,36 @@ public class Drivetrain extends SubsystemBase{
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
+        
     }
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
-        m_leftMotorGroup.set(leftPercentOutput);
-        m_rightMotorGroup.set(rightPercentOutput);
-        System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
+        m_leftMotorGroup.set(m_leftRateLimiter.calculate((slowModeOn ? leftPercentOutput / 3 : leftPercentOutput)));
+        m_rightMotorGroup.set(m_rightRateLimiter.calculate((slowModeOn ? rightPercentOutput / 3: rightPercentOutput)));
+        // System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
+        m_drivetrain.feed();
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
     public void arcadeDrive (double fowardPercentOutput, double turnPercent) {
-        m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
+        if (slowModeOn) {
+            m_drivetrain.arcadeDrive(fowardPercentOutput / 3, turnPercent / 2);
+        } else { 
+            m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
+        }
     }
 
-    public void curvatureDrive (double leftPercentY, double rightPercentY) {
-        m_drivetrain.curvatureDrive(leftPercentY, rightPercentY, false);
+    //polymomomomomomoprhisim
+            //   help it hhurts
+            // :(
+                // aiya
+
+    public void curvatureDrive (double leftPercentY, double rightPercentY, boolean turnInPlace) {
+        m_drivetrain.curvatureDrive(
+            m_leftRateLimiter.calculate(leftPercentY  * (slowModeOn ? 0.33 : 1)),
+            m_rightRateLimiter.calculate(rightPercentY * ((slowModeOn && turnInPlace) ? 0.33 : 1)), 
+            turnInPlace);
     }
 
     public void pidTankDrive(double distance) {
@@ -118,6 +149,13 @@ public class Drivetrain extends SubsystemBase{
         // TODO Auto-generated method stub
         // TODO learn C++
     }
+
+    private void ResetEncoders() {
+        m_leftBackMotor.getEncoder().setPosition(0);
+        m_leftFrontMotor.getEncoder().setPosition(0);
+        m_rightBackMotor.getEncoder().setPosition(0);
+        m_rightFrontMotor.getEncoder().setPosition(0);
+    }
 }
 
 
@@ -125,6 +163,6 @@ public class Drivetrain extends SubsystemBase{
  * No ones ever going to see this so im putting this down here
  * PID
  *  P - 92.2
- *  I- ???
+ *  I- P / D - 12.6
  *  D - 7.3
  */
