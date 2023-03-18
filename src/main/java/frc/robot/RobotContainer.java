@@ -97,7 +97,10 @@ public class RobotContainer {
     armUpCommand2,
     new ClawCommand(pneumatics, true));
 
-  private Command balanceAuto = new AutoBalance(m_drivetrain);
+  private Command balanceAuto = new SequentialCommandGroup(
+    scoreAuto,
+    new AutoBalance(m_drivetrain)
+  );
 
   
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
