@@ -30,7 +30,7 @@ public class Drivetrain extends SubsystemBase{
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
     
-    public static boolean turboModeOn;
+    public boolean turboModeOn = false;
 
     PIDController pidController = new PIDController(92.2, 0, 7.3);
 
