@@ -172,14 +172,17 @@ public class Arm extends SubsystemBase {
     
     // currentlyMoving = rotationSpeed != 0;
     if (safeExtension()) {
-      setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed));
-      setExtensionMotor(m_extendRateLimiter.calculate(extensionSpeed) * 0.33);
+      setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed) * .5);
+      setExtensionMotor(m_extendRateLimiter.calculate(extensionSpeed) * .33);
+    
     } else if (getExtensionArmPosition() > 0.25) {
-      setExtensionMotor(m_extendRateLimiter.calculate(Math.min(extensionSpeed, 0)) * 0.33);
-      setRotationMotor(m_rotationRateLimiter.calculate(Math.max(rotationSpeed, 0)));
+      setExtensionMotor(m_extendRateLimiter.calculate(Math.min(extensionSpeed, 0)) * .33);
+      setRotationMotor(m_rotationRateLimiter.calculate(Math.max(rotationSpeed, 0)) * .5);
+    
     } else if (getRotationArmPosition() > 40 || rotationSpeed > 0) {
-      setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed));
+      setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed) * .5);
       setExtensionMotor(0);
+    
     } else {
       setRotationMotor(m_rotationRateLimiter.calculate(rotationSpeed) * 0.1);
       setExtensionMotor(0);
@@ -235,7 +238,7 @@ public class Arm extends SubsystemBase {
   }
   
   private boolean safeExtension() {
-    return getRotationArmPosition() > 250.;
+    return getRotationArmPosition() > 230. || (getRotationArmPosition() < 130. && getRotationArmPosition() > 50.);
   }
 
   public void toggleBrakeMode() {

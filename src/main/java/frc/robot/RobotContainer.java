@@ -205,7 +205,7 @@ public class RobotContainer {
     Trigger rTrigger = new Trigger(() -> {
       return m_armController.getRightTriggerAxis() > .5;
     });
-    rTrigger.onTrue(new MoveArmSequence(100., .25, m_arm)
+    rTrigger.onTrue(new MoveArmSequence(100., 3.14159265, m_arm)
       .withTimeout(10.)
       .until(joystickInterrupt));
 

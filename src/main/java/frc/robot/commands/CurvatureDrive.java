@@ -36,12 +36,12 @@ public class CurvatureDrive extends CommandBase {
     // speedForward is front and back motion
     boolean quickTurn = m_xboxController.getLeftBumper();
     double speedForward = m_xboxController.getRightY() - m_xboxController.getRightTriggerAxis() + m_xboxController.getLeftTriggerAxis();
-    double rotateSpeed = m_xboxController.getLeftX();
-    
+    // double rotateSpeed = m_xboxController.getLeftX();
+
     if (speedForward > 0 && !quickTurn) {
-      m_drivetrain.curvatureDrive(speedForward, -m_xboxController.getLeftX() * 0.75, quickTurn);
+      m_drivetrain.curvatureDrive(speedForward, -m_xboxController.getLeftX() * (quickTurn?.325:.75), quickTurn);
     } else {
-      m_drivetrain.curvatureDrive(speedForward, m_xboxController.getLeftX() * 0.75, quickTurn);
+      m_drivetrain.curvatureDrive(speedForward, m_xboxController.getLeftX() * (quickTurn?.325:0.75), quickTurn);
     }
   }
 
