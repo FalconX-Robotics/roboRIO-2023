@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -61,12 +62,21 @@ public class RobotContainer {
   // private final Camera m_camera = new Camera();
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Arm m_arm = new Arm();
-  private final ManualArm m_manualArm = new ManualArm(m_armController, m_arm);
+  private final ManualArm m_manualArm = new ManualArm(m_armController, 0.5, m_arm);
   private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_drivetrainController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_drivetrainController);
   private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_drivetrainController);
   Pneumatics pneumatics = new Pneumatics();
   private Command armUpCommand = Commands.startEnd(
+    () -> {
+      m_arm.setExtensionMotor(0);
+      m_arm.setRotationMotor(.5);
+    }, 
+    () -> {m_arm.setExtensionMotor(0);
+    m_arm.setRotationMotor(0);
+  }, m_arm).withTimeout(.2);
+
+  private Command armUpCommand2 = Commands.startEnd(
     () -> {
       m_arm.setExtensionMotor(0);
       m_arm.setRotationMotor(.5);
@@ -83,7 +93,7 @@ public class RobotContainer {
     new ClawCommand(pneumatics, false));
 
   private Command scoreAuto = new SequentialCommandGroup(
-    armUpCommand,
+    armUpCommand2,
     new ClawCommand(pneumatics, true));
 
   
@@ -155,23 +165,51 @@ public class RobotContainer {
     Trigger rBumper = new JoystickButton(m_xboxController, XboxController.Button.kRightBumper.value);
     rBumper.onTrue(new MoveArm(m_arm, MoveArm.State.RETRACTED)); */
 
+    Trigger joystickInterrupt = new Trigger(() -> {
+      // CommandScheduler.getInstance().
+      return m_armController.getRightY() >  .2 ||
+             m_armController.getLeftY()  >  .2 ||
+             m_armController.getRightY() < -.2 ||
+             m_armController.getLeftY()  < -.2;
+            //  !m_arm.getCurrentCommand().; 
+    });
+    // This is stupid but it should probably properly interrupt? -w
+    // joystickInterrupt.onTrue(new MoveArmSequence(m_arm.getRotationArmPosition(), m_arm.getRotationArmPosition(), m_arm).withTimeout(0.));
+    
+
     // high
     Trigger yButton = new JoystickButton(m_armController, XboxController.Button.kY.value);
-    yButton.onTrue(new MoveArmSequence(250., 16.5, m_arm).withTimeout(10.));
+    yButton.onTrue(new MoveArmSequence(250., 16.5, m_arm)
+    .withTimeout(10.)
+    .until(joystickInterrupt));
+
     // mid
     Trigger bButton = new JoystickButton(m_armController, XboxController.Button.kB.value);
-    bButton.onTrue(new MoveArmSequence(260., 1., m_arm).withTimeout(10.));
+    bButton.onTrue(new MoveArmSequence(260., 1., m_arm)
+    .withTimeout(10.)
+    .until(joystickInterrupt));
+
     // low
     Trigger aButton = new JoystickButton(m_armController, XboxController.Button.kA.value);
-    aButton.onTrue(new MoveArmSequence(315., 5., m_arm).withTimeout(10.));
+    aButton.onTrue(new MoveArmSequence(315., 5., m_arm)
+    .withTimeout(10.)
+    .until(joystickInterrupt));
+
     // go home and cry with the homies
     Trigger xButton = new JoystickButton(m_armController, XboxController.Button.kX.value);
-    xButton.onTrue(new MoveArmSequence(40., 0.25, m_arm).withTimeout(10.));
-    // HUMAN (player) (IS THAT AN UNDERTALE REFE-)
+    xButton.onTrue(new MoveArmSequence(38., 0.25, m_arm)
+    .withTimeout(10.)
+    .until(joystickInterrupt));
+
+    // Substation: HUMAN (player) (IS THAT AN UNDERTALE REFE-)
     Trigger rTrigger = new Trigger(() -> {
       return m_armController.getRightTriggerAxis() > .5;
     });
-    rTrigger.onTrue(new MoveArmSequence(100., .25, m_arm));
+    rTrigger.onTrue(new MoveArmSequence(100., .25, m_arm)
+      .withTimeout(10.)
+      .until(joystickInterrupt));
+
+    
     /*
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
     bButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));

@@ -11,9 +11,9 @@ public class MoveArmSequence extends SequentialCommandGroup{
             // UnsafeMoveArm.createExtensionOnly(arm, 0.25),
             // UnsafeMoveArm.createRotateOnly(arm, targetAngle),
             // UnsafeMoveArm.createExtensionOnly(arm, targetExtend)
-            new ExtendOnly(0.25, arm),
-            new RotateOnly(targetAngle, arm),
-            new ExtendOnly(targetExtend, arm)
+            new ExtendOnly(0.25, 1., arm),
+            new RotateOnly(targetAngle, 10., arm),
+            new UnsafeMoveArm(targetAngle, targetExtend, .25, 1., arm)
         );
     }
 }

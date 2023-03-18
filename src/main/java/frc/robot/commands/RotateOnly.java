@@ -10,12 +10,15 @@ import frc.robot.subsystems.Arm;
 public class RotateOnly extends CommandBase {
   double m_rotation;
   double m_extension;
+  double m_leniancy;
+  double m_rotationLeniancy;
   Arm m_arm;
   boolean complete;
 
   /** Creates a new rotateOnly. */
-  public RotateOnly(double rotation, Arm arm) {
+  public RotateOnly(double rotation, double leniancy, Arm arm) {
     m_rotation = rotation;
+    m_leniancy = leniancy;
     m_arm = arm;
     addRequirements(arm);
   }
@@ -29,7 +32,7 @@ public class RotateOnly extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    complete = m_arm.unsafeMoveToPosition(m_rotation, m_extension);
+    complete = m_arm.unsafeMoveToPosition(m_rotation, m_extension, .25, m_leniancy);
   }
 
   // Called once the command ends or is interrupted.
