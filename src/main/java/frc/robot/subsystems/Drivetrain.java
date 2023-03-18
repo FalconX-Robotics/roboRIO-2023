@@ -30,7 +30,7 @@ public class Drivetrain extends SubsystemBase{
     private final CANSparkMax m_rightBackMotor  = new CANSparkMax(Constants.BACK_RIGHT_MOTOR_PORT, MotorType.kBrushless);
     private final MotorControllerGroup m_rightMotorGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
     
-    public static boolean slowModeOn;
+    public static boolean turboModeOn;
 
     PIDController pidController = new PIDController(92.2, 0, 7.3);
 
@@ -104,15 +104,15 @@ public class Drivetrain extends SubsystemBase{
     // Define tankDrive
         // Both using y
     public void tankDrive (double leftPercentOutput, double rightPercentOutput) {
-        m_leftMotorGroup.set(m_leftRateLimiter.calculate((slowModeOn ? leftPercentOutput / 3 : leftPercentOutput)));
-        m_rightMotorGroup.set(m_rightRateLimiter.calculate((slowModeOn ? rightPercentOutput / 3: rightPercentOutput)));
+        m_leftMotorGroup.set(m_leftRateLimiter.calculate((turboModeOn ? leftPercentOutput / 3 : leftPercentOutput)));
+        m_rightMotorGroup.set(m_rightRateLimiter.calculate((turboModeOn ? rightPercentOutput / 3: rightPercentOutput)));
         // System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
         m_drivetrain.feed();
     }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
     public void arcadeDrive (double fowardPercentOutput, double turnPercent) {
-        if (slowModeOn) {
+        if (turboModeOn) {
             m_drivetrain.arcadeDrive(fowardPercentOutput / 3, turnPercent / 2);
         } else { 
             m_drivetrain.arcadeDrive(fowardPercentOutput, turnPercent);
@@ -126,8 +126,8 @@ public class Drivetrain extends SubsystemBase{
 
     public void curvatureDrive (double leftPercentY, double rightPercentY, boolean turnInPlace) {
         m_drivetrain.curvatureDrive(
-            m_leftRateLimiter.calculate(leftPercentY  * (slowModeOn ? 0.33 : 1)),
-            m_rightRateLimiter.calculate(rightPercentY * ((slowModeOn && turnInPlace) ? 0.33 : 1)), 
+            m_leftRateLimiter.calculate(leftPercentY  * (turboModeOn ? 0.33 : 1)),
+            m_rightRateLimiter.calculate(rightPercentY * ((turboModeOn && turnInPlace) ? 0.33 : 1)), 
             turnInPlace);
     }
 
@@ -168,7 +168,7 @@ public class Drivetrain extends SubsystemBase{
     }
 
     public double getDistance() {
-        return ((m_leftBackMotor.getEncoder().getPosition() + m_rightBackMotor.getEncoder().getPosition()) / 2) * Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+        return (getLeftDistance() + getRightDistance())/ 2;
     }
 
     public void resetEncoders() {

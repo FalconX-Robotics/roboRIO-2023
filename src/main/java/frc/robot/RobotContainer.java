@@ -15,7 +15,7 @@ import frc.robot.commands.ManualArm;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveArmSequence;
 import frc.robot.commands.ResetEncoders;
-import frc.robot.commands.SlowModeCommand;
+import frc.robot.commands.TurboModeCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.subsystems.Arm;
@@ -228,7 +228,7 @@ public class RobotContainer {
     rightBumper2.onTrue(new ClawCommand(pneumatics, false));
     //XboxController2 IS MOVEMENT NOT ARM
     Trigger rightBumper = new JoystickButton(m_drivetrainController, XboxController.Button.kRightBumper.value);
-    rightBumper.whileTrue(new SlowModeCommand());
+    rightBumper.whileTrue(new TurboModeCommand(m_drivetrain));
 
     Trigger startButton2 = new JoystickButton(m_armController, XboxController.Button.kStart.value);
     startButton2.onTrue(new ResetEncoders(m_arm));
