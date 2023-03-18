@@ -15,7 +15,7 @@ import frc.robot.commands.ManualArm;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveArmSequence;
 import frc.robot.commands.ResetEncoders;
-import frc.robot.commands.SlowModeCommand;
+import frc.robot.commands.TurboModeCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.subsystems.Arm;
@@ -97,7 +97,10 @@ public class RobotContainer {
     armUpCommand2,
     new ClawCommand(pneumatics, true));
 
-  private Command balanceAuto = new AutoBalance(m_drivetrain);
+  private Command balanceAuto = new SequentialCommandGroup(
+    scoreAuto,
+    new AutoBalance(m_drivetrain)
+  );
 
   
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
@@ -224,13 +227,12 @@ public class RobotContainer {
 
     Trigger rightBumper2 = new JoystickButton(m_armController, XboxController.Button.kRightBumper.value);
     rightBumper2.onTrue(new ClawCommand(pneumatics, false));
-    //XboxController2 IS MOVEMENT NOT ARM
-    Trigger rightBumper = new JoystickButton(m_drivetrainController, XboxController.Button.kRightBumper.value);
-    rightBumper.whileTrue(new SlowModeCommand());
+    // XboxController2 IS MOVEMENT NOT ARM
+    // Trigger rightBumper = new JoystickButton(m_drivetrainController, XboxController.Button.kRightBumper.value);
+    // rightBumper.whileTrue(new TurboModeCommand(m_drivetrain));
 
     Trigger startButton2 = new JoystickButton(m_armController, XboxController.Button.kStart.value);
     startButton2.onTrue(new ResetEncoders(m_arm));
-
     
     Trigger backButton2 = new JoystickButton(m_armController, XboxController.Button.kBack.value);
     backButton2.onTrue(new ToggleBrakeMode(m_arm));

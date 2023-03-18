@@ -76,37 +76,21 @@ public class AutoBalance extends CommandBase {
             m_drivetrain.tankDrive(-0.25, -0.25);
         } else {
             m_drivetrain.resetEncoders();
-            m_balanceState = State.MOVE_UP;
+            m_balanceState = State.BALANCE;
         }
     }
 
+    //unused
     private void moveUp() {
         if (Math.abs(gyro.getPitch() - startingPitch) > 6) {
-            m_drivetrain.tankDrive(-0.2, -0.2);
+            m_drivetrain.tankDrive(-0.1, -0.1);
         } else {
             m_balanceState = State.BALANCE;
         }
     }
 
     private void balance() {
-        // if(counter < 50) {
-            // if (gyro.getYaw() > 3) {
-            //     System.out.println("going backwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
-            //     m_drivetrain.tankDrive(0.01 * gyro.getYaw(), 0.01 * gyro.getYaw());
-
-            // } else if (gyro.getYaw() < -3) {
-            //     System.out.println("going forwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
-            //     m_drivetrain.tankDrive(-0.01 * gyro.getYaw(), -0.01  * gyro.getYaw());
-
-            // } else if (gyro.getYaw() > -3 && gyro.getYaw() < 3) {
-            //     System.out.println("stopped, counter at "  + counter + " gyro at "+ gyro.getYaw());
-            //     m_drivetrain.tankDrive(0, 0);
-
-            // }
-        // } else {
-        //     m_drivetrain.tankDrive(0, 0);
-        // }
-        double driveSpeed = distanceToCenter * 0.0 + gyro.getPitch() * -0.005;
+        double driveSpeed = distanceToCenter * 0.3 + gyro.getPitch() * -0.005;
         driveSpeed = MathUtil.clamp(driveSpeed, -0.3, 0.3);
         if (Math.abs(gyro.getPitch()) < 1.5) {
             driveSpeed = 0;

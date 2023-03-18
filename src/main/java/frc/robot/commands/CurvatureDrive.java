@@ -34,6 +34,8 @@ public class CurvatureDrive extends CommandBase {
   public void execute() {
     // m_xboxController.setRumble(RumbleType.kBothRumble, 1);
     // speedForward is front and back motion
+    m_drivetrain.turboModeOn = m_xboxController.getRightBumper();
+
     boolean quickTurn = m_xboxController.getLeftBumper();
     double speedForward = m_xboxController.getRightY() - m_xboxController.getRightTriggerAxis() + m_xboxController.getLeftTriggerAxis();
     // double rotateSpeed = m_xboxController.getLeftX();
