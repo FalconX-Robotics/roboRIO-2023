@@ -98,7 +98,8 @@ public class Drivetrain extends SubsystemBase{
     public void periodic () {
         SmartDashboard.putNumber("Left Motor Group", m_leftMotorGroup.get());
         SmartDashboard.putNumber("Right Motor Group", m_rightMotorGroup.get());
-        
+        SmartDashboard.putNumber("distance", getDistance());
+        SmartDashboard.putNumber("gyrow pitch from drivetrain", getGyro().getPitch());
     }
     // Define tankDrive
         // Both using y
@@ -147,7 +148,7 @@ public class Drivetrain extends SubsystemBase{
     
     private void useOutput(double output, double setpoint) {
         // TODO Auto-generated method stub
-        
+        // TODO learn C++
     }
 
     private void ResetEncoders() {
@@ -155,6 +156,27 @@ public class Drivetrain extends SubsystemBase{
         m_leftFrontMotor.getEncoder().setPosition(0);
         m_rightBackMotor.getEncoder().setPosition(0);
         m_rightFrontMotor.getEncoder().setPosition(0);
+    }
+
+    
+    public double getRightDistance() {
+        return m_rightBackMotor.getEncoder().getPosition() / Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+    }
+
+    public double getLeftDistance() {
+        return m_leftBackMotor.getEncoder().getPosition() / Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+    }
+
+    public double getDistance() {
+        return ((m_leftBackMotor.getEncoder().getPosition() + m_rightBackMotor.getEncoder().getPosition()) / 2) * Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+    }
+
+    public void resetEncoders() {
+        m_leftBackMotor.getEncoder().setPosition(0);
+        m_leftFrontMotor.getEncoder().setPosition(0);
+        m_rightBackMotor.getEncoder().setPosition(0);
+        m_rightFrontMotor.getEncoder().setPosition(0);
+        //this will reset the distance methods
     }
 }
 

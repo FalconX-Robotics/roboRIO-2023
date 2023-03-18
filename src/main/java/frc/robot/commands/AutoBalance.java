@@ -1,111 +1,131 @@
-// package frc.robot.commands;
+package frc.robot.commands;
 
-// import java.util.function.DoubleSupplier;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
-// import edu.wpi.first.math.MathUtil;
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.networktables.NetworkTableEntry;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.PIDCommand;
-// import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.Drivetrain;
 
-// public class AutoBalance extends PIDCommand {
-//     private Drivetrain m_drivetrain;
-//     protected double m_P, m_I, m_D, m_F;
-//     protected double m_positionTolerance = 0, m_velocityTolerance = 0;
-//     protected double m_maxSpeed = 1;
+public class AutoBalance extends CommandBase {
 
-//     protected DoubleSupplier m_setpointSupplier;
-// 	protected NetworkTableEntry m_errorField = SmartDashboard.getEntry("DriveForward/Error");
-//     protected NetworkTableEntry m_velocityField = SmartDashboard.getEntry("DriveForward/Velocity");
+    public static enum State {
+        MOVE_FORWARD,
+        MOVE_UP,
+        BALANCE
+    }
+
+    public State m_balanceState = State.MOVE_FORWARD;
+
+    Drivetrain m_drivetrain;
+    PigeonIMU gyro;
+    boolean balanced = false;
+    double startingPitch;
+    int counter = 0;
+    double distanceToCenter = 0;
+    double distanceMoved;
+
+    public AutoBalance(Drivetrain drivetrain) {
+        m_drivetrain = drivetrain;
+        addRequirements(drivetrain);
+    }
     
-//     /**
-//      * @param setpointSource is only called on initialize
-//      */
-//     public AutoBalance(DoubleSupplier setpointSource, Drivetrain drivetrain) {
-//         super(new PIDController(0, 0, 0),
-//             () -> 0.,
-//             0.,
-//             output -> {},
-//             drivgitetrain);
-//         m_drivetrain = drivetrain;
-//         m_controller.setPID(m_P, m_I, m_D);
-//         m_controller.setTolerance(m_positionTolerance, m_velocityTolerance);
-//     }
+    @Override
+    public void initialize() {
+        m_balanceState = State.MOVE_FORWARD;
+        gyro = m_drivetrain.getGyro();
+        gyro.setYaw(0.0);
+        startingPitch = gyro.getPitch();
+    }
 
-//     public AutoBalance(double setpointSource, Drivetrain drivetrain) {
-//         this(() -> setpointSource, drivetrain);
-//     }
+    @Override
+    public void execute() {
+        SmartDashboard.putString("AutoBalance State", m_balanceState.toString());
+        SmartDashboard.putNumber("Gyro pitch", gyro.getPitch());
+        distanceMoved = m_drivetrain.getDistance();
+        switch (m_balanceState) {
+            case MOVE_FORWARD:
+                moveForward();
+                break;
+            case MOVE_UP:
+                moveUp();
+                break;
+            case BALANCE:
+                
+                balance();
+                break;
+        }
+    }
 
-//     public void setPIDF(double P, double I, double D, double F) {
-//         m_P = P;
-//         m_I = I;
-//         m_D = D;
-//         m_F = F;
-//         m_controller.setPID(P, I, D);
-//     }
+    @Override
+    public void end(boolean interrupted) {
 
-//     public void setSetpoint(double setpoint) {
-//         this.m_setpoint = () -> setpoint;
-//     }
+    }
 
-//     @Override
-//     public void initialize() {
-//         double setpoint = m_setpointSupplier.getAsDouble();
-//         m_setpoint = () -> setpoint;
-//         m_useOutput = output -> m_drivetrain.arcadeDrive(m_F*Math.signum(output) + MathUtil.clamp(output, -m_maxSpeed, m_maxSpeed), 0);
+    @Override
+    public boolean isFinished() {
+        return balanced;
 
-//         // double m_initEncoderDistance = m_drivetrain.averageEncoderDistance();
-//         // m_measurement = () -> m_drivetrain.averageEncoderDistance() - m_initEncoderDistance;
-//     }
+    }
 
-//     @Override
-//     public void execute() {
-//         super.execute();
-//         m_errorField.setDouble(m_controller.getPositionError());
-//         m_velocityField.setDouble(m_controller.getVelocityError());
-//     }
+    private void moveForward() {
+        System.out.println("Pitch at " + gyro.getPitch());
+        if (Math.abs(gyro.getPitch() - startingPitch) < 7) {
+            m_drivetrain.tankDrive(-0.25, -0.25);
+        } else {
+            m_drivetrain.resetEncoders();
+            m_balanceState = State.MOVE_UP;
+        }
+    }
 
-//     @Override
-//     public boolean isFinished() {
-//         return getController().atSetpoint();
-//     }
+    private void moveUp() {
+        if (Math.abs(gyro.getPitch() - startingPitch) > 6) {
+            m_drivetrain.tankDrive(-0.2, -0.2);
+        } else {
+            m_balanceState = State.BALANCE;
+        }
+    }
 
-//     @Override
-//     public void end(boolean interrupted) {
-//         m_errorField.setDouble(100);
-//     }
-// }
-// import java.util.function.DoubleConsumer;
-// import java.util.function.DoubleSupplier;
+    private void balance() {
+        // if(counter < 50) {
+            // if (gyro.getYaw() > 3) {
+            //     System.out.println("going backwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
+            //     m_drivetrain.tankDrive(0.01 * gyro.getYaw(), 0.01 * gyro.getYaw());
 
-// import com.ctre.phoenix.sensors.PigeonIMU;
+            // } else if (gyro.getYaw() < -3) {
+            //     System.out.println("going forwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
+            //     m_drivetrain.tankDrive(-0.01 * gyro.getYaw(), -0.01  * gyro.getYaw());
 
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.wpilibj2.command.CommandBase;
-// import edu.wpi.first.wpilibj2.command.PIDCommand;
-// import frc.robot.subsystems.Drivetrain;
+            // } else if (gyro.getYaw() > -3 && gyro.getYaw() < 3) {
+            //     System.out.println("stopped, counter at "  + counter + " gyro at "+ gyro.getYaw());
+            //     m_drivetrain.tankDrive(0, 0);
 
-// public class AutoBalance extends PIDCommand {
-//     // public AutoBalance (Drivetrain drivetrain) {}
-//   private final PIDController m_controller;
-//   private DoubleSupplier m_measurement;
-//   private DoubleSupplier m_setpoint;
-//   private DoubleConsumer m_useOutput;
+            // }
+        // } else {
+        //     m_drivetrain.tankDrive(0, 0);
+        // }
+        double driveSpeed = distanceToCenter * 0.0 + gyro.getPitch() * -0.005;
+        driveSpeed = MathUtil.clamp(driveSpeed, -0.3, 0.3);
+        if (Math.abs(gyro.getPitch()) < 1.5) {
+            driveSpeed = 0;
+        }
 
-//     Drivetrain m_drivetrain;
-//     PigeonIMU m_gyro;
+        m_drivetrain.tankDrive(driveSpeed, driveSpeed);
+        
+        distanceToCenter = 23 * 0.0254 - distanceMoved;
 
-//     public AutoBalance(Drivetrain drivetrain) {
-//         super(m_controller, m_setpoint, m_measurement, m_useOutput, null)
-//         // Will start auto for 3 seconds and then turn off
-//         m_drivetrain = drivetrain;
-//         m_gyro = drivetrain.getGyro();
-//         addRequirements(m_drivetrain);
-//     }
+        SmartDashboard.putNumber("Distance to center", distanceToCenter);
+        SmartDashboard.putNumber("Distance moved", distanceMoved);
+        SmartDashboard.putNumber("Drive speed", driveSpeed);
+        // robot is 28 inches long
+        // robot should move 23 inches
 
-// }
+        // if (distanceToCenter <= 0.5) {
+        //     balanced = true;
+        // }
 
 
-
-// note for later this is because i want to run the robot and this has errors i dont want to deal with rn
+    }
+}
