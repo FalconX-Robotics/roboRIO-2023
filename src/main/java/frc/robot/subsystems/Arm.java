@@ -50,7 +50,7 @@ public class Arm extends SubsystemBase {
   private double m_targetAngle = 0;
   private double m_targetExtension = 0;
   private boolean m_isNewTarget = false;
-
+        // julian knows
   private BetterSlewRateLimiter m_extendRateLimiter = new BetterSlewRateLimiter(1.5, 1.5, 0);
   private BetterSlewRateLimiter m_rotationRateLimiter = new BetterSlewRateLimiter(1.5, 5, 0);
   // Placeholders on gear ratio and radius; Change later
@@ -86,12 +86,13 @@ public class Arm extends SubsystemBase {
     return m_extendArm.getEncoder().getPosition() * armExtensionGearRadius / armExtensionGearRatio * 2. * Math.PI;
   }
 
-  public boolean unsafeMoveToPosition(double angle, double extend) {
-    System.out.println("Target angle: " + angle + " current Angle: " + getRotationArmPosition());
+  public boolean unsafeMoveToPosition(double angle, double extend, double extensionLeniancy, double rotationLeniancy) {
+    // System.out.println("Target angle: " + angle + " current Angle: " + getRotationArmPosition());
     setRotationMotor(MathUtil.clamp((angle - getRotationArmPosition()) * .02, -1., 1.));
     setExtensionMotor(MathUtil.clamp((extend - getExtensionArmPosition()) * .1, -.5, .5));
-
-    return Math.abs(getRotationArmPosition() - angle) <= 1 && Math.abs(getExtensionArmPosition() - extend) <= .25;
+    
+    // returns if the arm is in position
+    return Math.abs(getRotationArmPosition() - angle) <= rotationLeniancy && Math.abs(getExtensionArmPosition() - extend) <= extensionLeniancy;
   }
 
   private void stopMotors() {
@@ -138,6 +139,7 @@ public class Arm extends SubsystemBase {
     return (armRotationCheck && armExtensionCheck);
 
     // this is really terrible -- logan
+    // skill issue -w
   }
 
   public void setExtensionMotor(double percentOutput) {
