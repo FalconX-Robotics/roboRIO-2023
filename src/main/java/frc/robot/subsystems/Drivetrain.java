@@ -156,6 +156,27 @@ public class Drivetrain extends SubsystemBase{
         m_rightBackMotor.getEncoder().setPosition(0);
         m_rightFrontMotor.getEncoder().setPosition(0);
     }
+
+    
+    public double getRightDistance() {
+        return m_rightBackMotor.getEncoder().getPosition() * Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+    }
+
+    public double getLeftDistance() {
+        return m_leftBackMotor.getEncoder().getPosition() * Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+    }
+
+    public double getDistance() {
+        return ((m_leftBackMotor.getEncoder().getPosition() + m_rightBackMotor.getEncoder().getPosition()) / 2) * Constants.DRIVETRAIN_GEARBOX * Constants.DRIVETRAIN_WHEEL_DIAMETER * Math.PI;
+    }
+
+    public void resetEncoders() {
+        m_leftBackMotor.getEncoder().setPosition(0);
+        m_leftFrontMotor.getEncoder().setPosition(0);
+        m_rightBackMotor.getEncoder().setPosition(0);
+        m_rightFrontMotor.getEncoder().setPosition(0);
+        //this will reset the distance methods
+    }
 }
 
 

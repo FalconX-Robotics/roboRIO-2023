@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalance extends CommandBase {
@@ -21,7 +22,8 @@ public class AutoBalance extends CommandBase {
     boolean balanced = false;
     double startingPitch;
     int counter = 0;
-    
+    double distanceToCenter = 0;
+    double distanceMoved;
 
     public AutoBalance(Drivetrain drivetrain) {
         m_drivetrain = drivetrain;
@@ -38,6 +40,7 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void execute() {
+        distanceMoved = m_drivetrain.getDistance();
         switch (m_balanceState) {
             case MOVE_FORWARD:
                 moveForward();
@@ -46,6 +49,7 @@ public class AutoBalance extends CommandBase {
                 moveUp();
                 break;
             case BALANCE:
+                
                 balance();
                 break;
         }
@@ -75,31 +79,42 @@ public class AutoBalance extends CommandBase {
         if (Math.abs(gyro.getPitch() - startingPitch) > 6) {
             m_drivetrain.tankDrive(-0.2, -0.2);
         } else {
+            m_drivetrain.resetEncoders();
             m_balanceState = State.BALANCE;
         }
     }
 
     private void balance() {
         // if(counter < 50) {
-            if (gyro.getYaw() > 3) {
-                System.out.println("going backwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
-                m_drivetrain.tankDrive(0.01 * gyro.getYaw(), 0.01 * gyro.getYaw());
+            // if (gyro.getYaw() > 3) {
+            //     System.out.println("going backwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
+            //     m_drivetrain.tankDrive(0.01 * gyro.getYaw(), 0.01 * gyro.getYaw());
 
-            } else if (gyro.getYaw() < -3) {
-                System.out.println("going forwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
-                m_drivetrain.tankDrive(-0.01 * gyro.getYaw(), -0.01  * gyro.getYaw());
+            // } else if (gyro.getYaw() < -3) {
+            //     System.out.println("going forwards, counter at "  + counter + " gyro at "+ gyro.getYaw());
+            //     m_drivetrain.tankDrive(-0.01 * gyro.getYaw(), -0.01  * gyro.getYaw());
 
-            } else if (gyro.getYaw() > -3 && gyro.getYaw() < 3) {
-                System.out.println("stopped, counter at "  + counter + " gyro at "+ gyro.getYaw());
-                m_drivetrain.tankDrive(0, 0);
+            // } else if (gyro.getYaw() > -3 && gyro.getYaw() < 3) {
+            //     System.out.println("stopped, counter at "  + counter + " gyro at "+ gyro.getYaw());
+            //     m_drivetrain.tankDrive(0, 0);
 
-            } 
+            // }
         // } else {
         //     m_drivetrain.tankDrive(0, 0);
         // }
+        double driveSpeed = distanceToCenter * 0.01 + gyro.getYaw() * 0.01;
+        
+        m_drivetrain.tankDrive(driveSpeed, driveSpeed);
+        
+        distanceToCenter = 23 - distanceMoved;
+        // robot is 28 inches long
+        // robot should move 23 inches
 
+        // if (distanceToCenter <= 0.5) {
+        //     balanced = true;
+        // }
         counter++;
-        if (counter > 150 ) {
+        if (counter > 500) {
             balanced = true;
         }
     }
