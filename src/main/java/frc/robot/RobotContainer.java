@@ -54,6 +54,7 @@ public class RobotContainer {
 
   private static final String m_yeetAutoString = "YeetAuto";
   private static final String m_scoreAutoString = "ScoreAuto";
+  private static final String m_autoBalanceString = "BalanceAuto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
@@ -96,6 +97,8 @@ public class RobotContainer {
     armUpCommand2,
     new ClawCommand(pneumatics, true));
 
+  private Command balanceAuto = new AutoBalance(m_drivetrain);
+
   
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
@@ -135,6 +138,7 @@ public class RobotContainer {
     // Sendable Chooser stuff
     m_chooser.setDefaultOption("Yeet Auto", m_yeetAutoString);
     m_chooser.addOption("Score Auto", m_scoreAutoString);
+    m_chooser.addOption("Auto Balance", m_autoBalanceString);
     SmartDashboard.putData("Auto Selecter", m_chooser);
 
   }
@@ -241,6 +245,12 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
     // return new AutoBalance(0, m_drivetrain);
-      return new AutoBalance(m_drivetrain);
+    if (m_chooser.getSelected().equals(m_scoreAutoString))
+    {
+      return scoreAuto;
+    } else if (m_chooser.getSelected().equals(m_autoBalanceString)) {
+      return balanceAuto;
+    }
+    return yeetAuto;
   }
 }
