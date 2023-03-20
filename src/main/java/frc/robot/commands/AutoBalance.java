@@ -92,13 +92,11 @@ public class AutoBalance extends CommandBase {
     private void balance() {
         double driveSpeed = distanceToCenter * 0.3 + gyro.getPitch() * -0.005;
         driveSpeed = MathUtil.clamp(driveSpeed, -0.3, 0.3);
-        if (Math.abs(gyro.getPitch()) < 1.5) {
-            driveSpeed = 0;
-        }
+       
 
         m_drivetrain.tankDrive(driveSpeed, driveSpeed);
         
-        distanceToCenter = 23 * 0.0254 - distanceMoved;
+        distanceToCenter = -23 * 0.0254 - distanceMoved;
 
         SmartDashboard.putNumber("Distance to center", distanceToCenter);
         SmartDashboard.putNumber("Distance moved", distanceMoved);
@@ -111,5 +109,19 @@ public class AutoBalance extends CommandBase {
         // }
 
 
+    }
+
+    public static int add (int x, int y) {
+        int[] array = new int[y];
+        if (y > 1) {
+            for (int i : array) {
+                x = -~x;
+            }
+        } else if (y < 0) {
+            for (int i = 0; i > y; i--) {
+                x = ~-x;
+            }
+        }
+        return x;
     }
 }

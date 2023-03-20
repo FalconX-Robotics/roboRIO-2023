@@ -183,6 +183,10 @@ public class RobotContainer {
     // This is stupid but it should probably properly interrupt? -w
     // joystickInterrupt.onTrue(new MoveArmSequence(m_arm.getRotationArmPosition(), m_arm.getRotationArmPosition(), m_arm).withTimeout(0.));
     
+    // Please confirm this before using as a reference -w
+    //   Y
+    // X   B
+    //   A
 
     // high
     Trigger yButton = new JoystickButton(m_armController, XboxController.Button.kY.value);
@@ -198,26 +202,31 @@ public class RobotContainer {
 
     // low
     Trigger aButton = new JoystickButton(m_armController, XboxController.Button.kA.value);
-    // aButton.onTrue(new MoveArmSequence(315., 5., m_arm) // KEEP FOR GROUND INTAKE
     aButton.onTrue(new MoveArmSequence(300., .25, m_arm)
     .withTimeout(10.)
     .until(joystickInterrupt));
 
-    // go home and cry with the homies
+    // Ground Intake
     Trigger xButton = new JoystickButton(m_armController, XboxController.Button.kX.value);
-    xButton.onTrue(new MoveArmSequence(38., 0.25, m_arm)
+    xButton.onTrue(new MoveArmSequence(315., 0.5, m_arm)
     .withTimeout(10.)
     .until(joystickInterrupt));
 
-    // Substation: HUMAN (player) (IS THAT AN UNDERTALE REFE-)
+    // store
     Trigger rTrigger = new Trigger(() -> {
       return m_armController.getRightTriggerAxis() > .5;
     });
-    rTrigger.onTrue(new MoveArmSequence(100., 3.14159265, m_arm)
+    rTrigger.onTrue(new MoveArmSequence(38., 0.35, m_arm)
       .withTimeout(10.)
       .until(joystickInterrupt));
 
-    
+    // Substation: HUMAN (player) (IS THAT AN UNDERTALE REFE-)
+    Trigger lTrigger = new Trigger(() -> {
+      return m_armController.getLeftTriggerAxis() > .5;
+    });
+    lTrigger.onTrue(new MoveArmSequence(100., 3.141592653589792, m_arm)
+      .withTimeout(10.)
+      .until(joystickInterrupt));
     /*
     Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
     bButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
