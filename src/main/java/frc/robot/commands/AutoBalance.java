@@ -122,6 +122,32 @@ public class AutoBalance extends CommandBase {
                 x = ~-x;
             }
         }
+        
         return x;
     }
+
+    public static int multiplyPositiveInts(int x, int y) {
+        int yPower = (int) (Math.log(y)/Math.log(2));
+        int yRemainder = y % yPower;
+        int result = x;
+
+        result = result << yPower;
+        for (int i = 0; i < yRemainder; i++) {
+          result += x;
+        }
+        return result;
+
+        /*
+         * 3, 17
+         * 00000011 - 3
+         * 00010001 - 17 = 2^5 rem 1
+         * 
+         * 
+         * 
+         * 
+         * 
+        */
+    }
+    
+    
 }

@@ -13,6 +13,7 @@ public class DistancedDriveForward extends CommandBase {
     public void initialize() {
         // TODO Auto-generated method stub
         super.initialize();
+        m_drivetrain.resetEncoders();
     }
 
     public DistancedDriveForward (Drivetrain drivetrain, double distance, double speed) {
@@ -24,11 +25,12 @@ public class DistancedDriveForward extends CommandBase {
 
     @Override
     public void execute() {
-        if (m_drivetrain.getDistance() < m_distance) {
-            m_drivetrain.tankDrive(m_speed, m_speed);
-        } else {
-            return;
-        }
+        m_drivetrain.tankDrive(m_speed, m_speed);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return Math.abs(m_distance) <= Math.abs(m_drivetrain.getDistance());
     }
     
 }

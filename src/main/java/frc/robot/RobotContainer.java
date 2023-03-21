@@ -10,6 +10,7 @@ import frc.robot.commands.ToggleBrakeMode;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClawCommand;
 import frc.robot.commands.CurvatureDrive;
+import frc.robot.commands.DistancedDriveForward;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ManualArm;
 import frc.robot.commands.MoveArm;
@@ -98,6 +99,8 @@ public class RobotContainer {
     new ClawCommand(pneumatics, true));
 
   private Command balanceAuto = new SequentialCommandGroup(
+    new DistancedDriveForward(m_drivetrain, 100, 0.1),
+    new DistancedDriveForward(m_drivetrain, -100, 0.1),
     scoreAuto,
     new AutoBalance(m_drivetrain)
   );
