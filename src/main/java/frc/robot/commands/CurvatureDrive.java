@@ -8,19 +8,24 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
-
+import frc.robot.util.BetterSlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 
 public class CurvatureDrive extends CommandBase {
   /** Creates a new ArcadeDrive. */
   private final Drivetrain m_drivetrain;
   private final XboxController m_xboxController;
+  private final Arm m_arm;
+
+  private BetterSlewRateLimiter m_driftyRateLimiter = new BetterSlewRateLimiter(Math.E, 5, 0);
   
-  public CurvatureDrive(Drivetrain drivetrain, XboxController xboxController) {
+  public CurvatureDrive(Drivetrain drivetrain, XboxController xboxController, Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
     m_xboxController = xboxController;
+    m_arm = arm;
 
     addRequirements(m_drivetrain);
   }
@@ -34,16 +39,16 @@ public class CurvatureDrive extends CommandBase {
   public void execute() {
     // m_xboxController.setRumble(RumbleType.kBothRumble, 1);
     // speedForward is front and back motion
-    m_drivetrain.turboModeOn = m_xboxController.getRightBumper();
+    m_drivetrain.turboModeOn = m_xboxController.getRightBumper() && (m_arm.getRotationArmPosition() < 60 || m_arm.getRotationArmPosition() > 300);
 
     boolean quickTurn = m_xboxController.getLeftBumper();
     double speedForward = m_xboxController.getRightY() - m_xboxController.getRightTriggerAxis() + m_xboxController.getLeftTriggerAxis();
     // double rotateSpeed = m_xboxController.getLeftX();
 
     if (speedForward > 0 && !quickTurn) {
-      m_drivetrain.curvatureDrive(speedForward, -m_xboxController.getLeftX() * (quickTurn?.4:.75), quickTurn);
+      m_drivetrain.curvatureDrive(speedForward, -m_xboxController.getLeftX() * (quickTurn?.5:.3), quickTurn);
     } else {
-      m_drivetrain.curvatureDrive(speedForward, m_xboxController.getLeftX() * (quickTurn?.4:0.75), quickTurn);
+      m_drivetrain.curvatureDrive(speedForward, m_xboxController.getLeftX() * (quickTurn?.5:0.3), quickTurn);
     }
   }
 

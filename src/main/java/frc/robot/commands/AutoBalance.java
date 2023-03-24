@@ -6,10 +6,11 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoBalance extends CommandBase {
+public class AutoBalance extends CommandBase  {
 
     public static enum State {
         MOVE_FORWARD,
@@ -26,14 +27,24 @@ public class AutoBalance extends CommandBase {
     int counter = 0;
     double distanceToCenter = 0;
     double distanceMoved;
+    boolean updateDistance = true;
+    double forward = 1;
+    PIDController pidController = new PIDController(0.008, 0, 0.005);
 
     public AutoBalance(Drivetrain drivetrain) {
         m_drivetrain = drivetrain;
         addRequirements(drivetrain);
     }
+
+    public AutoBalance(Drivetrain drivetrain, double direction) {
+        m_drivetrain = drivetrain;
+        addRequirements(drivetrain);
+        forward = direction;
+    }
     
     @Override
     public void initialize() {
+        m_drivetrain.printInverted();
         m_balanceState = State.MOVE_FORWARD;
         gyro = m_drivetrain.getGyro();
         gyro.setYaw(0.0);
@@ -73,7 +84,7 @@ public class AutoBalance extends CommandBase {
     private void moveForward() {
         System.out.println("Pitch at " + gyro.getPitch());
         if (Math.abs(gyro.getPitch() - startingPitch) < 7) {
-            m_drivetrain.tankDrive(-0.25, -0.25);
+            m_drivetrain.tankDrive(-0.25 * forward, -0.25 * forward);
         } else {
             m_drivetrain.resetEncoders();
             m_balanceState = State.BALANCE;
@@ -90,13 +101,24 @@ public class AutoBalance extends CommandBase {
     }
 
     private void balance() {
-        double driveSpeed = distanceToCenter * 0.3 + gyro.getPitch() * -0.005;
+        if (updateDistance) {
+            distanceToCenter = (-50 * forward) * 0.0254 - distanceMoved;
+        }
+        
+        if (Math.abs(distanceToCenter) < 0.0254 ) {
+            distanceToCenter = 0;
+            updateDistance = false;
+        }
+
+        // double driveSpeed = distanceToCenter * 0.2 + (MathUtil.clamp(gyro.getPitch(), -15, 15)) * -0.01;
+        double driveSpeed = distanceToCenter * 0.2;
+        driveSpeed += pidController.calculate((MathUtil.clamp(gyro.getPitch(), -15, 15)), 0);
         driveSpeed = MathUtil.clamp(driveSpeed, -0.3, 0.3);
        
 
         m_drivetrain.tankDrive(driveSpeed, driveSpeed);
         
-        distanceToCenter = -23 * 0.0254 - distanceMoved;
+        
 
         SmartDashboard.putNumber("Distance to center", distanceToCenter);
         SmartDashboard.putNumber("Distance moved", distanceMoved);

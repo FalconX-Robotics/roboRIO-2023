@@ -56,6 +56,8 @@ public class RobotContainer {
   private static final String m_yeetAutoString = "YeetAuto";
   private static final String m_scoreAutoString = "ScoreAuto";
   private static final String m_autoBalanceString = "BalanceAuto";
+  private static final String m_balanceNoMobilityString = "BalanceNoMobility";
+
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
@@ -67,7 +69,7 @@ public class RobotContainer {
   private final ManualArm m_manualArm = new ManualArm(m_armController, 0.5, m_arm);
   private final ArcadeDrive arcadeDrive = new ArcadeDrive(m_drivetrain, m_drivetrainController);
   private final TankDrive tankDrive = new TankDrive(m_drivetrain, m_drivetrainController);
-  private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_drivetrainController);
+  private final CurvatureDrive curvatureDrive = new CurvatureDrive(m_drivetrain, m_drivetrainController, m_arm);
   Pneumatics pneumatics = new Pneumatics();
   private Command armUpCommand = Commands.startEnd(
     () -> {
@@ -95,13 +97,20 @@ public class RobotContainer {
     new ClawCommand(pneumatics, false));
 
   private Command scoreAuto = new SequentialCommandGroup(
-    armUpCommand2,
-    new ClawCommand(pneumatics, true));
+      armUpCommand2,
+      new ClawCommand(pneumatics, true)
+  );
 
   private Command balanceAuto = new SequentialCommandGroup(
-    new DistancedDriveForward(m_drivetrain, 100, 0.1),
-    new DistancedDriveForward(m_drivetrain, -100, 0.1),
     scoreAuto,
+    new DistancedDriveForward(m_drivetrain, -3.7, -0.25),
+    new WaitCommand(2),
+    new AutoBalance(m_drivetrain, -1)
+  );
+
+  private Command balanceNoMobilityAuto = new SequentialCommandGroup(
+    // scoreAuto,
+    new WaitCommand(1),
     new AutoBalance(m_drivetrain)
   );
 
@@ -145,6 +154,7 @@ public class RobotContainer {
     m_chooser.setDefaultOption("Yeet Auto", m_yeetAutoString);
     m_chooser.addOption("Score Auto", m_scoreAutoString);
     m_chooser.addOption("Auto Balance", m_autoBalanceString);
+    m_chooser.addOption("Auto Balance no Mobility", m_balanceNoMobilityString);
     SmartDashboard.putData("Auto Selecter", m_chooser);
 
   }
@@ -205,7 +215,7 @@ public class RobotContainer {
 
     // low
     Trigger aButton = new JoystickButton(m_armController, XboxController.Button.kA.value);
-    aButton.onTrue(new MoveArmSequence(300., .25, m_arm)
+    aButton.onTrue(new MoveArmSequence(302.6662, .25, m_arm)
     .withTimeout(10.)
     .until(joystickInterrupt));
 
@@ -260,11 +270,15 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
     // return new AutoBalance(0, m_drivetrain);
+
+    //someone use case and switch because i mean come on
     if (m_chooser.getSelected().equals(m_scoreAutoString))
     {
       return scoreAuto;
     } else if (m_chooser.getSelected().equals(m_autoBalanceString)) {
       return balanceAuto;
+    } else if (m_chooser.getSelected().equals(m_balanceNoMobilityString)) {
+      return balanceNoMobilityAuto;
     }
     return yeetAuto;
   }

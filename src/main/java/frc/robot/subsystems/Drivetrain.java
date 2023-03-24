@@ -126,8 +126,8 @@ public class Drivetrain extends SubsystemBase{
 
     public void curvatureDrive (double leftPercentY, double rightPercentY, boolean turnInPlace) {
         m_drivetrain.curvatureDrive(
-            m_leftRateLimiter.calculate(leftPercentY  * (turboModeOn ? 0.33 : 1)),
-            m_rightRateLimiter.calculate(rightPercentY * ((turboModeOn && turnInPlace) ? 0.33 : 1)), 
+            m_leftRateLimiter.calculate(leftPercentY  * (turboModeOn ? 1 : 0.33)),
+            m_rightRateLimiter.calculate(rightPercentY * ((turboModeOn || !turnInPlace) ? 1 : 0.33)), 
             turnInPlace);
     }
 
@@ -177,6 +177,18 @@ public class Drivetrain extends SubsystemBase{
         m_rightBackMotor.getEncoder().setPosition(0);
         m_rightFrontMotor.getEncoder().setPosition(0);
         //this will reset the distance methods
+    }
+
+    public MotorControllerGroup getLeftMotors() {
+        return m_leftMotorGroup;
+    }
+
+    public MotorControllerGroup getRightMotors() {
+        return m_rightMotorGroup;
+    }
+
+    public void printInverted() {
+        SmartDashboard.putBoolean("drivetrainInverted", m_rightFrontMotor.getInverted());
     }
 }
 
