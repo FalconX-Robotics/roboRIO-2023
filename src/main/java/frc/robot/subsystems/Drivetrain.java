@@ -109,6 +109,13 @@ public class Drivetrain extends SubsystemBase{
         // System.out.println("setting motors " + leftPercentOutput + ", " + rightPercentOutput);
         m_drivetrain.feed();
     }
+
+    public void voltTankDrive (double leftPercentOutput, double rightPercentOutput) {
+        m_leftMotorGroup.setVoltage(leftPercentOutput);
+        m_rightMotorGroup.setVoltage(rightPercentOutput);
+
+        m_drivetrain.feed();
+    }
     // Define arcadeDrive
         // We dont ascribe left or right in case we want to map both to one joystick
     public void arcadeDrive (double fowardPercentOutput, double turnPercent) {

@@ -29,7 +29,7 @@ public class AutoBalance extends CommandBase  {
     double distanceMoved;
     boolean updateDistance = true;
     double forward = 1;
-    PIDController pidController = new PIDController(0.008, 0, 0.005);
+    PIDController pidController = new PIDController(0.006, 0, 0.0005);
 
     public AutoBalance(Drivetrain drivetrain) {
         m_drivetrain = drivetrain;
@@ -84,7 +84,7 @@ public class AutoBalance extends CommandBase  {
     private void moveForward() {
         System.out.println("Pitch at " + gyro.getPitch());
         if (Math.abs(gyro.getPitch() - startingPitch) < 7) {
-            m_drivetrain.tankDrive(-0.25 * forward, -0.25 * forward);
+            m_drivetrain.voltTankDrive(-0.25 * forward * 12, -0.25 * forward *12);
         } else {
             m_drivetrain.resetEncoders();
             m_balanceState = State.BALANCE;
@@ -116,7 +116,7 @@ public class AutoBalance extends CommandBase  {
         driveSpeed = MathUtil.clamp(driveSpeed, -0.3, 0.3);
        
 
-        m_drivetrain.tankDrive(driveSpeed, driveSpeed);
+        m_drivetrain.voltTankDrive(driveSpeed * 12, driveSpeed * 12);
         
         
 

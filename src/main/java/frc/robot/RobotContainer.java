@@ -93,7 +93,7 @@ public class RobotContainer {
     armUpCommand,
     new ClawCommand(pneumatics, true),
     new WaitCommand(2),
-    new TimedDriveForward(m_drivetrain, -0.5, 2.0),
+    new TimedDriveForward(m_drivetrain, -0.5, 1.7),
     new ClawCommand(pneumatics, false));
 
   private Command scoreAuto = new SequentialCommandGroup(
@@ -102,19 +102,33 @@ public class RobotContainer {
   );
 
   private Command balanceAuto = new SequentialCommandGroup(
-    scoreAuto,
+    createScoreAuto(),
+    
     new DistancedDriveForward(m_drivetrain, -3.7, -0.25),
     new WaitCommand(2),
     new AutoBalance(m_drivetrain, -1)
   );
 
   private Command balanceNoMobilityAuto = new SequentialCommandGroup(
-    // scoreAuto,
+    createScoreAuto(),
     new WaitCommand(1),
     new AutoBalance(m_drivetrain)
   );
 
-  
+  private Command createScoreAuto () {
+    return new SequentialCommandGroup(
+      Commands.startEnd(
+    () -> {
+      m_arm.setExtensionMotor(0);
+      m_arm.setRotationMotor(.5);
+    }, 
+    () -> {m_arm.setExtensionMotor(0);
+    m_arm.setRotationMotor(0);
+  }, m_arm).withTimeout(.2),
+      new ClawCommand(pneumatics, true)
+  );
+  }
+
   // private final AutoBalance autoBalance = new AutoBalance(m_drivetrain);
 
   // The robot's subsystems and commands are defined here...
@@ -237,7 +251,8 @@ public class RobotContainer {
     Trigger lTrigger = new Trigger(() -> {
       return m_armController.getLeftTriggerAxis() > .5;
     });
-    lTrigger.onTrue(new MoveArmSequence(100., 3.141592653589792, m_arm)
+    // Old numbers are angle: 100, extend: 3.14
+    lTrigger.onTrue(new MoveArmSequence(98.7, 7.67, m_arm)
       .withTimeout(10.)
       .until(joystickInterrupt));
     /*
