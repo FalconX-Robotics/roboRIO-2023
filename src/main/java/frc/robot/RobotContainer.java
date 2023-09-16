@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -60,6 +61,7 @@ public class RobotContainer {
 
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private final SendableChooser<String> m_disableChooser = new SendableChooser<>();
 
   private final XboxController m_drivetrainController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
   private final XboxController m_armController = new XboxController(Constants.XBOX_CONTROLLER_PORT2);
@@ -171,6 +173,10 @@ public class RobotContainer {
     m_chooser.addOption("Auto Balance no Mobility", m_balanceNoMobilityString);
     SmartDashboard.putData("Auto Selecter", m_chooser);
 
+    m_disableChooser.setDefaultOption("None", "None");
+    m_disableChooser.addOption("NoKeybinds", "NoKeybinds");
+    m_disableChooser.addOption("NoGrab+NoKeybinds", "NoGrab");
+    SmartDashboard.putData("DisableSelecter", m_disableChooser);
   }
 
   /**
@@ -185,7 +191,7 @@ public class RobotContainer {
    
   private void configureBindings() {
     configureButtonBindings();
-    m_drivetrain.setDefaultCommand(curvatureDrive);
+    m_drivetrain.setDefaultCommand(arcadeDrive);
     m_arm.setDefaultCommand(m_manualArm);
   }
 
@@ -210,70 +216,95 @@ public class RobotContainer {
     // This is stupid but it should probably properly interrupt? -w
     // joystickInterrupt.onTrue(new MoveArmSequence(m_arm.getRotationArmPosition(), m_arm.getRotationArmPosition(), m_arm).withTimeout(0.));
     
-    // Please confirm this before using as a reference -w
     //   Y
     // X   B
     //   A
-
-    // high
-    Trigger yButton = new JoystickButton(m_armController, XboxController.Button.kY.value);
-    yButton.onTrue(new MoveArmSequence(250., 16.5, m_arm)
-    .withTimeout(10.)
-    .until(joystickInterrupt));
-
-    // mid
-    Trigger bButton = new JoystickButton(m_armController, XboxController.Button.kB.value);
-    bButton.onTrue(new MoveArmSequence(260., 1., m_arm)
-    .withTimeout(10.)
-    .until(joystickInterrupt));
-
-    // low
-    Trigger aButton = new JoystickButton(m_armController, XboxController.Button.kA.value);
-    aButton.onTrue(new MoveArmSequence(302.6662, .25, m_arm)
-    .withTimeout(10.)
-    .until(joystickInterrupt));
-
-    // Ground Intake
-    Trigger xButton = new JoystickButton(m_armController, XboxController.Button.kX.value);
-    xButton.onTrue(new MoveArmSequence(315., 0.5, m_arm)
-    .withTimeout(10.)
-    .until(joystickInterrupt));
-
-    // store
-    Trigger rTrigger = new Trigger(() -> {
-      return m_armController.getRightTriggerAxis() > .5;
+    Trigger yButtonDissabler = new JoystickButton(m_drivetrainController, XboxController.Button.kY.value);
+    yButtonDissabler.whileTrue(new CommandBase() {
+      @Override
+      public void execute() {
+        Constants.overrideDisable = true;
+        // System.out.println(Constants.disableMoreStuff);
+        SmartDashboard.putBoolean("disable", Constants.overrideDisable);
+        // super.initialize();
+      }
     });
-    rTrigger.onTrue(new MoveArmSequence(38., 0.35, m_arm)
+    yButtonDissabler.whileFalse(new CommandBase() {
+      @Override
+      public void execute() {
+        Constants.overrideDisable = false;
+        // System.out.println(Constants.disableMoreStuff);
+        SmartDashboard.putBoolean("disable", Constants.overrideDisable);
+        // super.initialize();
+      }
+    });
+    // if(!Constants.disableStuff){
+    if(!m_disableChooser.getSelected().equals("None")){
+      // high
+      Trigger yButton = new JoystickButton(m_armController, XboxController.Button.kY.value);
+      yButton.onTrue(new MoveArmSequence(250., 16.5, m_arm)
       .withTimeout(10.)
       .until(joystickInterrupt));
 
-    // Substation: HUMAN (player) (IS THAT AN UNDERTALE REFE-)
-    Trigger lTrigger = new Trigger(() -> {
-      return m_armController.getLeftTriggerAxis() > .5;
-    });
-    // Old numbers are angle: 100, extend: 3.14
-    lTrigger.onTrue(new MoveArmSequence(98.7, 7.67, m_arm)
+      // mid
+      Trigger bButton = new JoystickButton(m_armController, XboxController.Button.kB.value);
+      bButton.onTrue(new MoveArmSequence(260., 1., m_arm)
       .withTimeout(10.)
       .until(joystickInterrupt));
-    /*
-    Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
-    bButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
-*/
-    Trigger leftBumper2 = new JoystickButton(m_armController, XboxController.Button.kLeftBumper.value);
-    leftBumper2.onTrue(new ClawCommand(pneumatics, true));
 
-    Trigger rightBumper2 = new JoystickButton(m_armController, XboxController.Button.kRightBumper.value);
-    rightBumper2.onTrue(new ClawCommand(pneumatics, false));
-    // XboxController2 IS MOVEMENT NOT ARM
-    // Trigger rightBumper = new JoystickButton(m_drivetrainController, XboxController.Button.kRightBumper.value);
-    // rightBumper.whileTrue(new TurboModeCommand(m_drivetrain));
+      // low
+      Trigger aButton = new JoystickButton(m_armController, XboxController.Button.kA.value);
+      aButton.onTrue(new MoveArmSequence(302.6662, .25, m_arm)
+      .withTimeout(10.)
+      .until(joystickInterrupt));
 
-    Trigger startButton2 = new JoystickButton(m_armController, XboxController.Button.kStart.value);
-    startButton2.onTrue(new ResetEncoders(m_arm));
+      // Ground Intake
+      Trigger xButton = new JoystickButton(m_armController, XboxController.Button.kX.value);
+      xButton.onTrue(new MoveArmSequence(315., 0.5, m_arm)
+      .withTimeout(10.)
+      .until(joystickInterrupt));
+
+      // store
+      Trigger rTrigger = new Trigger(() -> {
+        return m_armController.getRightTriggerAxis() > .5;
+      });
+      rTrigger.onTrue(new MoveArmSequence(38., 0.35, m_arm)
+        .withTimeout(10.)
+        .until(joystickInterrupt));
+
+      // Substation: HUMAN (player) (IS THAT AN UNDERTALE REFE-)
+      Trigger lTrigger = new Trigger(() -> {
+        return m_armController.getLeftTriggerAxis() > .5;
+      });
+      // Old numbers are angle: 100, extend: 3.14
+      lTrigger.onTrue(new MoveArmSequence(98.7, 7.67, m_arm)
+        .withTimeout(10.)
+        .until(joystickInterrupt));
+      /*
+      Trigger bButton = new JoystickButton(m_xboxController, XboxController.Button.kB.value);
+      bButton.onTrue(new MoveArm(m_arm, MoveArm.State.GROUND_ARM));
+      */
+      
+      // XboxController2 IS MOVEMENT NOT ARM
+      // Trigger rightBumper = new JoystickButton(m_drivetrainController, XboxController.Button.kRightBumper.value);
+      // rightBumper.whileTrue(new TurboModeCommand(m_drivetrain));
+
+      Trigger startButton2 = new JoystickButton(m_armController, XboxController.Button.kStart.value);
+      startButton2.onTrue(new ResetEncoders(m_arm));
+      
+      Trigger backButton2 = new JoystickButton(m_armController, XboxController.Button.kBack.value);
+      backButton2.onTrue(new ToggleBrakeMode(m_arm));
+    }
     
-    Trigger backButton2 = new JoystickButton(m_armController, XboxController.Button.kBack.value);
-    backButton2.onTrue(new ToggleBrakeMode(m_arm));
-    
+    // if (!Constants.disableClaw && !Constants.overrideDisable){
+    if(!m_disableChooser.getSelected().equals("disableClaw")){
+      Trigger leftBumper2 = new JoystickButton(m_armController, XboxController.Button.kLeftBumper.value);
+      leftBumper2.onTrue(new ClawCommand(pneumatics, true));
+
+      Trigger rightBumper2 = new JoystickButton(m_armController, XboxController.Button.kRightBumper.value);
+      rightBumper2.onTrue(new ClawCommand(pneumatics, false));
+    }
+
   }
 
   /**

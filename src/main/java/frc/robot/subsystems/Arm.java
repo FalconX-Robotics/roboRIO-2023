@@ -115,27 +115,31 @@ public class Arm extends SubsystemBase {
     m_isNewTarget = true;
     boolean armRotationCheck = false;
     boolean armExtensionCheck = false;
-    
-    //moves the rotation to the target angle with 5 degrees of leniancy
-    if (getRotationArmPosition() > m_targetAngle + 5 ) {
-      m_rotationArm.set(-0.2);
-    } else if (getRotationArmPosition() < m_targetAngle - 5) {
-      m_rotationArm.set(0.2);
-    } else {
-      m_rotationArm.set(0);
-      armRotationCheck = true;
-      currentlyMoving = false;
+    if (!Constants.overrideDisable){
+      if (getRotationArmPosition() > m_targetAngle + 5 ) {
+        m_rotationArm.set(-0.2);
+      } else if (getRotationArmPosition() < m_targetAngle - 5) {
+        m_rotationArm.set(0.2);
+      } else {
+        m_rotationArm.set(0);
+        armRotationCheck = true;
+        currentlyMoving = false;
+      }
+
+      if (getExtensionArmPosition() > m_targetExtension + 1 ) {
+        m_extendArm.set(-0.2);
+      } else if (getExtensionArmPosition() < m_targetExtension - 1) {
+        m_extendArm.set(0.2);
+      } else {
+        m_extendArm.set(0);
+        armExtensionCheck = true;
+      }
     }
+    //moves the rotation to the target angle with 5 degrees of leniancy
+    
     //moves the extender to the target length with 1 inches of leniancy
 
-    if (getExtensionArmPosition() > m_targetExtension + 1 ) {
-      m_extendArm.set(-0.2);
-    } else if (getExtensionArmPosition() < m_targetExtension - 1) {
-      m_extendArm.set(0.2);
-    } else {
-      m_extendArm.set(0);
-      armExtensionCheck = true;
-    }
+    
     return (armRotationCheck && armExtensionCheck);
 
     // this is really terrible -- logan
@@ -143,10 +147,14 @@ public class Arm extends SubsystemBase {
   }
 
   public void setExtensionMotor(double percentOutput) {
-    double voltage = percentOutput * 12. - 0.3 * Math.cos(Math.toRadians(getRotationArmPosition()));
-    m_extendArm.setVoltage(voltage);
-    SmartDashboard.putNumber("extensionMotor", voltage);
-    
+    if (!Constants.overrideDisable) {
+      double voltage = percentOutput * 12. - 0.3 * Math.cos(Math.toRadians(getRotationArmPosition()));
+      m_extendArm.setVoltage(voltage);
+      SmartDashboard.putNumber("extensionMotor", voltage);
+    } else {
+      m_extendArm.setVoltage(0);
+      SmartDashboard.putNumber("extensionMotor", 0);
+    }
   }
   public boolean moveToPosition2(double angle, double extend){
 
@@ -156,16 +164,21 @@ public class Arm extends SubsystemBase {
     return Math.abs(getRotationArmPosition() - angle) <= 5 && Math.abs(getExtensionArmPosition() - extend) <= 1;
   }
   public void setRotationMotor(double percentOutput) {
-    double extensionPercent = getExtensionArmPosition() / 17.;
-    // inner peaces charge you with excitment
-    double inVolts = .25;
-    double outVolts = .4;
+    if (!Constants.overrideDisable){
+      double extensionPercent = getExtensionArmPosition() / 17.;
+      // inner peaces charge you with excitment
+      double inVolts = .25;
+      double outVolts = .4;
 
-    double voltageFactor = inVolts * (1 - extensionPercent) + outVolts * extensionPercent;
+      double voltageFactor = inVolts * (1 - extensionPercent) + outVolts * extensionPercent;
 
-    double voltage = percentOutput * 12 + voltageFactor * Math.sin(Math.toRadians(getRotationArmPosition()));
-    m_rotationArm.setVoltage(voltage);
-    SmartDashboard.putNumber("rotationMotor", voltage);
+      double voltage = percentOutput * 12 + voltageFactor * Math.sin(Math.toRadians(getRotationArmPosition()));
+      m_rotationArm.setVoltage(voltage);
+      SmartDashboard.putNumber("rotationMotor", voltage);
+    } else {
+      m_rotationArm.setVoltage(0);
+      SmartDashboard.putNumber("rotationMotor", 0);
+    }
   }
 
   public void manualMoveArm(double rotationSpeed, double extensionSpeed) {

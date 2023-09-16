@@ -18,9 +18,14 @@ import edu.wpi.first.wpilibj.XboxController;
  * constants are needed, to reduce verbosity.
  * <h1> William was here
  * <h2> Logan was too
+ * <h3> And Sarah
  */
 public final class Constants {
   
+  public static boolean disableStuff = true;
+  public static boolean disableClaw = false;
+  public static boolean overrideDisable = false;
+
   // Drivetrain Ports
   public static final int FRONT_LEFT_MOTOR_PORT = 7;
   public static final int BACK_LEFT_MOTOR_PORT = 9;
