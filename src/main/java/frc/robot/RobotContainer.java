@@ -59,6 +59,10 @@ public class RobotContainer {
   private static final String m_autoBalanceString = "BalanceAuto";
   private static final String m_balanceNoMobilityString = "BalanceNoMobility";
 
+  // private static final String none = "None";
+  // private static final String noKeyBinds = "NoKeyBinds";
+  // private static final String noGrab = "noGrab";
+
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private final SendableChooser<String> m_disableChooser = new SendableChooser<>();
@@ -173,10 +177,20 @@ public class RobotContainer {
     m_chooser.addOption("Auto Balance no Mobility", m_balanceNoMobilityString);
     SmartDashboard.putData("Auto Selecter", m_chooser);
 
+<<<<<<< Updated upstream
     m_disableChooser.setDefaultOption("None", "None");
     m_disableChooser.addOption("NoKeybinds", "NoKeybinds");
     m_disableChooser.addOption("NoGrab+NoKeybinds", "NoGrab");
     SmartDashboard.putData("DisableSelecter", m_disableChooser);
+=======
+<<<<<<< Updated upstream
+=======
+    // m_disableChooser.setDefaultOption("None", none);
+    // m_disableChooser.addOption("NoKeybinds", noKeyBinds);
+    // m_disableChooser.addOption("NoGrab+NoKeybinds", noGrab);
+    // SmartDashboard.putData("DisableSelecter", m_disableChooser);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   }
 
   /**
@@ -246,9 +260,26 @@ public class RobotContainer {
       .withTimeout(10.)
       .until(joystickInterrupt));
 
+<<<<<<< Updated upstream
       // mid
       Trigger bButton = new JoystickButton(m_armController, XboxController.Button.kB.value);
       bButton.onTrue(new MoveArmSequence(260., 1., m_arm)
+=======
+    // Substation: HUMAN (player) (IS THAT AN UNDERTALE REFE-)
+    Trigger lTrigger = new Trigger(() -> {
+      return m_armController.getLeftTriggerAxis() > .5;
+    });
+<<<<<<< Updated upstream
+    // Old numbers are angle: 100, extend: 3.14
+    lTrigger.onTrue(new MoveArmSequence(98.7, 7.67, m_arm)
+=======
+    if(!Constants.disableStuff){
+    // if(!m_disableChooser.getSelected().equals(none)){
+      // high
+      Trigger yButton = new JoystickButton(m_armController, XboxController.Button.kY.value);
+      yButton.onTrue(new MoveArmSequence(250., 16.5, m_arm)
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
       .withTimeout(10.)
       .until(joystickInterrupt));
 
@@ -296,8 +327,16 @@ public class RobotContainer {
       backButton2.onTrue(new ToggleBrakeMode(m_arm));
     }
     
+<<<<<<< Updated upstream
     // if (!Constants.disableClaw && !Constants.overrideDisable){
     if(!m_disableChooser.getSelected().equals("disableClaw")){
+=======
+<<<<<<< Updated upstream
+=======
+    if (!Constants.disableClaw && !Constants.overrideDisable){
+    // if(!m_disableChooser.getSelected().equals(noGrab){
+    // if(!m_disableChooser.getSelected().equals(noGrab)){
+>>>>>>> Stashed changes
       Trigger leftBumper2 = new JoystickButton(m_armController, XboxController.Button.kLeftBumper.value);
       leftBumper2.onTrue(new ClawCommand(pneumatics, true));
 
@@ -305,6 +344,10 @@ public class RobotContainer {
       rightBumper2.onTrue(new ClawCommand(pneumatics, false));
     }
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   }
 
   /**

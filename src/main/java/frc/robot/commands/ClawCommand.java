@@ -17,13 +17,13 @@ public class ClawCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        if (openClaw) {
-            pneumatics.open();
-            System.out.println("CLAW opens");
-        } else {
-            pneumatics.close();
-            System.out.println("CLAW closes");
-        }
+        // if (openClaw) {
+        //     pneumatics.open();
+        //     System.out.println("CLAW opens");
+        // } else {
+        //     pneumatics.close();
+        //     System.out.println("CLAW closes");
+        // }
         // clawOpen ? pneumatics.open() : pneumatics.close();
         // why ternary operator no work =(
     }
